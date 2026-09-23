@@ -7,6 +7,11 @@
     <meta name="description" content="Prince OS — Personal Command Dashboard">
     <title>Prince OS</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#050505">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
 </head>
 
 <body>
@@ -186,6 +191,16 @@
     </main>
 
     <script src="script.js"></script>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("service-worker.js")
+                    .then(() => console.log("Prince OS service worker registered"))
+                    .catch(error => console.error("Service worker registration failed:", error));
+            });
+        }
+    </script>
 
 </body>
 </html>
