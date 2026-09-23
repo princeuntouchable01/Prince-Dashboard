@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050505">
+    <meta name="description" content="Prince OS — Personal Command Dashboard">
+    <title>Prince OS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="dashboard">
+
+        <header class="top-bar">
+
+            <div class="brand">
+                <span class="brand-mark">♛</span>
+
+                <div>
+                    <div class="brand-name">PRINCE OS</div>
+                    <div class="brand-status">
+                        PERSONAL COMMAND CENTER
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-info">
+                <div id="clock">00:00</div>
+                <div id="date">Loading...</div>
+            </div>
+
+        </header>
+
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <p class="eyebrow">
+                    WELCOME BACK
+                </p>
+
+                <h1>Prince</h1>
+
+                <p class="hero-text">
+                    Your digital command center is ready.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="system-panel">
+
+            <div class="section-heading">
+                <span>SYSTEM STATUS</span>
+                <span class="live-dot">● LIVE</span>
+            </div>
+
+            <div class="status-grid">
+
+                <div class="status-card">
+                    <span class="status-label">BATTERY</span>
+                    <strong id="battery">--%</strong>
+                </div>
+
+                <div class="status-card">
+                    <span class="status-label">NETWORK</span>
+                    <strong id="network">ONLINE</strong>
+                </div>
+
+                <div class="status-card">
+                    <span class="status-label">SYSTEM</span>
+                    <strong>PRINCE OS</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+<section class="apps">
+
+    <div class="section-heading">
+        <span>QUICK LAUNCH</span>
+    </div>
+
+    <div class="app-grid">
+
+        <a
+            class="app-card"
+            href="https://github.com/princeuntouchable01"
+            target="_blank"
+            rel="noopener"
+        >
+            <span class="app-icon">⌘</span>
+            <span class="app-name">GitHub</span>
+            <span class="app-description">Profile & repositories</span>
+        </a>
+
+        <a
+            class="app-card"
+            href="https://github.com/princeuntouchable01/TECH_PRO_PORTFOLIO-.git"
+            target="_blank"
+            rel="noopener"
+        >
+            <span class="app-icon">◈</span>
+            <span class="app-name">Portfolio</span>
+            <span class="app-description">Tech Pro portfolio</span>
+        </a>
+
+        <a
+            class="app-card"
+            href="https://github.com/princeuntouchable01/TP-AI.git"
+            target="_blank"
+            rel="noopener"
+        >
+            <span class="app-icon">✦</span>
+            <span class="app-name">TP-AI</span>
+            <span class="app-description">Tech Pro Intelligence</span>
+        </a>
+
+        <a
+            class="app-card"
+            href="https://github.com/princeuntouchable01/Weather_Generator.git"
+            target="_blank"
+            rel="noopener"
+        >
+            <span class="app-icon">☁</span>
+            <span class="app-name">Projects</span>
+            <span class="app-description">Weather Generator</span>
+        </a>
+
+    </div>
+
+</section>
+
+
+        <section class="command-panel">
+
+            <div class="section-heading">
+                <span>COMMAND CENTER</span>
+            </div>
+
+            <div class="command-box">
+
+                <span class="command-prefix">›</span>
+
+                <input
+                    type="text"
+                    id="commandInput"
+                    placeholder="Type a command..."
+                    autocomplete="off"
+                >
+
+                <button
+                    id="commandButton"
+                    type="button"
+                >
+                    RUN
+                </button>
+
+            </div>
+
+            <p
+                id="commandOutput"
+                class="command-output"
+            >
+                Awaiting command...
+            </p>
+
+        </section>
+
+
+        <footer class="footer">
+
+            <span>PRINCE OS</span>
+            <span>BLACK × GOLD × WHITE</span>
+            <span>© 2026</span>
+
+        </footer>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
