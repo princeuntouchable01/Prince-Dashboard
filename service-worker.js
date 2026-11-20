@@ -1,4 +1,4 @@
-const CACHE_NAME = "prince-os-v4-app-manager-1";
+const CACHE_NAME = "prince-os-v4-file-manager-1";
 
 const FILES_TO_CACHE = [
   "./",
