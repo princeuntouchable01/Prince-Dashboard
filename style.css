@@ -1502,3 +1502,103 @@ textarea:focus-visible {
         font-size: 9px;
     }
 }
+
+/* =========================================
+   PRINCE OS v4.2 — FILE ROWS
+========================================= */
+
+.file-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px 130px;
+    align-items: center;
+    gap: 12px;
+    padding: 17px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s ease;
+}
+
+.file-row:last-child {
+    border-bottom: none;
+}
+
+.file-row:hover {
+    background: var(--panel-hover);
+}
+
+.file-name-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.file-name-area i {
+    width: 21px;
+    height: 21px;
+    flex-shrink: 0;
+    color: var(--accent);
+}
+
+.file-name-area strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.file-type {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.file-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.file-actions button {
+    padding: 7px 9px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.file-actions button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+@media (max-width: 700px) {
+    .file-row {
+        grid-template-columns: minmax(0, 1fr) 65px 85px;
+        gap: 6px;
+        padding: 15px 10px;
+    }
+
+    .file-name-area {
+        gap: 7px;
+    }
+
+    .file-name-area strong {
+        font-size: 11px;
+    }
+
+    .file-type {
+        font-size: 9px;
+    }
+
+    .file-actions {
+        gap: 4px;
+    }
+
+    .file-actions button {
+        padding: 6px 5px;
+        font-size: 8px;
+    }
+}
