@@ -1,6 +1,6 @@
 /* =========================================
    PRINCE OS v4.0
-   DESIGN SYSTEM
+   DESIGN SYSTEM 
    BLACK × GOLD × WHITE
 ========================================= */
 
@@ -1162,4 +1162,153 @@ textarea:focus-visible {
     height: 25px;
     color: var(--accent);
     stroke-width: 1.8;
+}
+
+/* =================================
+   PRINCE OS — APP INSTALLER
+================================= */
+
+.app-install-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 30px;
+}
+
+.app-install-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.app-install-heading h2 {
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+
+.app-install-heading p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.app-install-heading > i {
+    color: var(--accent);
+    width: 28px;
+    height: 28px;
+}
+
+.app-install-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.app-install-form input {
+    width: 100%;
+    min-width: 0;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+.app-install-form input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(214, 173, 53, 0.12);
+}
+
+.app-install-form input::placeholder {
+    color: var(--muted);
+}
+
+.install-app-button {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #080808;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.install-app-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+#installAppStatus {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--accent);
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 28px 0 18px;
+}
+
+.section-heading h2 {
+    font-size: 18px;
+}
+
+#installedAppCount {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.installed-app-card {
+    position: relative;
+}
+
+.installed-app-card .app-card-icon {
+    color: var(--accent);
+    width: 28px;
+    height: 28px;
+}
+
+.installed-app-card button {
+    margin-top: auto;
+    padding: 9px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.installed-app-card button:hover {
+    border-color: #e05252;
+    color: #e05252;
+}
+
+@media (max-width: 700px) {
+    .app-install-panel {
+        padding: 17px;
+    }
+
+    .app-install-form {
+        grid-template-columns: 1fr;
+    }
+
+    .install-app-button {
+        grid-column: auto;
+    }
 }
