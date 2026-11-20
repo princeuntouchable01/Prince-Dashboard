@@ -119,3 +119,145 @@
         align-items: flex-start;
     }
 }
+
+/* =========================================
+   PRINCE OS — THEME ENGINE
+   ========================================= */
+
+/* Accent per theme (RGB triplet drives everything) */
+:root {
+    --accent-rgb: 214, 173, 53;
+}
+
+[data-theme="platinum"] { --accent-rgb: 199, 203, 212; }
+[data-theme="sapphire"] { --accent-rgb: 77, 124, 255; }
+[data-theme="amethyst"] { --accent-rgb: 168, 85, 247; }
+[data-theme="emerald"]  { --accent-rgb: 52, 199, 132; }
+
+[data-theme] {
+    --gold: rgb(var(--accent-rgb));
+    --gold-light: color-mix(in srgb, rgb(var(--accent-rgb)) 55%, white);
+    --border: rgba(var(--accent-rgb), 0.35);
+}
+
+/* Re-apply accent to rules that hardcoded the old gold */
+body {
+    background:
+        radial-gradient(circle at 50% 10%, rgba(var(--accent-rgb), 0.12), transparent 35%),
+        radial-gradient(circle at 10% 90%, rgba(var(--accent-rgb), 0.06), transparent 30%),
+        var(--black);
+}
+
+.dashboard {
+    box-shadow:
+        0 0 60px rgba(var(--accent-rgb), 0.07),
+        inset 0 0 40px rgba(255, 255, 255, 0.015);
+}
+
+.top-bar {
+    border-bottom: 1px solid rgba(var(--accent-rgb), 0.16);
+}
+
+.brand-mark {
+    text-shadow: 0 0 15px rgba(var(--accent-rgb), 0.5);
+}
+
+.status-card,
+.weather-card {
+    border: 1px solid rgba(var(--accent-rgb), 0.18);
+}
+
+.status-card:hover,
+.weather-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.08);
+}
+
+.app-card {
+    background:
+        linear-gradient(145deg, rgba(var(--accent-rgb), 0.07), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
+}
+
+.app-card:hover,
+.app-card:active {
+    border-color: var(--gold);
+    box-shadow:
+        0 12px 35px rgba(var(--accent-rgb), 0.12),
+        inset 0 0 25px rgba(var(--accent-rgb), 0.04);
+}
+
+.app-icon {
+    color: var(--gold-light);
+    background: rgba(var(--accent-rgb), 0.08);
+    border: 1px solid rgba(var(--accent-rgb), 0.3);
+}
+
+.command-box {
+    border: 1px solid rgba(var(--accent-rgb), 0.28);
+}
+
+.footer {
+    border-top: 1px solid rgba(var(--accent-rgb), 0.12);
+}
+
+/* Settings panel */
+.settings-panel {
+    margin-top: 40px;
+}
+
+.theme-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.theme-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 76px;
+    padding: 16px 14px;
+    color: var(--muted);
+    background: var(--panel);
+    border: 1px solid rgba(var(--accent-rgb), 0.18);
+    border-radius: 16px;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.theme-swatch:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+}
+
+.theme-swatch.active {
+    color: var(--white);
+    border-color: var(--gold);
+    box-shadow: 0 8px 25px rgba(var(--accent-rgb), 0.12);
+}
+
+.theme-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.dot-gold     { background: #d6ad35; }
+.dot-platinum { background: #c7cbd4; }
+.dot-sapphire { background: #4d7cff; }
+.dot-amethyst { background: #a855f7; }
+.dot-emerald  { background: #34c784; }
+
+@media (max-width: 380px) {
+    .theme-swatch {
+        min-width: 62px;
+        padding: 12px 10px;
+    }
+}
