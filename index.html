@@ -48,6 +48,11 @@
         Applications
     </button>
 
+<button class="nav-item" data-view="files">
+    <i data-lucide="folder"></i>
+    File Manager
+</button>
+
     <button class="nav-item" data-view="workspace">
         <i data-lucide="panels-top-left"></i>
         Workspace
@@ -327,6 +332,104 @@
             </section>
 
 
+<!-- FILE MANAGER -->
+
+<section class="view" id="view-files">
+
+    <div class="page-heading">
+        <p class="eyebrow">SYSTEM STORAGE</p>
+        <h1>File Manager</h1>
+        <p>Explore and organize your digital files.</p>
+    </div>
+
+    <!-- STORAGE OVERVIEW -->
+
+    <div class="file-storage-card">
+        <i data-lucide="hard-drive"></i>
+        <div>
+            <strong id="fileCount">0 FILES</strong>
+            <small>Your PRINCE OS library</small>
+        </div>
+    </div>
+
+    <!-- FILE ACTIONS -->
+
+    <div class="file-toolbar">
+
+        <input
+            type="search"
+            id="fileSearch"
+            placeholder="Search your files..."
+        >
+
+        <button id="createFolderBtn">
+            <i data-lucide="folder-plus"></i>
+            NEW FOLDER
+        </button>
+
+        <label for="fileUpload" class="file-upload-button">
+            <i data-lucide="upload"></i>
+            UPLOAD FILES
+        </label>
+
+        <input
+            type="file"
+            id="fileUpload"
+            multiple
+            hidden
+        >
+
+    </div>
+
+    <!-- FILE CATEGORIES -->
+
+    <div class="file-categories">
+
+        <button class="file-filter active" data-filter="all">
+            <i data-lucide="files"></i>
+            All Files
+        </button>
+
+        <button class="file-filter" data-filter="documents">
+            <i data-lucide="file-text"></i>
+            Documents
+        </button>
+
+        <button class="file-filter" data-filter="images">
+            <i data-lucide="image"></i>
+            Images
+        </button>
+
+        <button class="file-filter" data-filter="folders">
+            <i data-lucide="folder"></i>
+            Folders
+        </button>
+
+    </div>
+
+    <!-- FILE LIST -->
+
+    <div class="file-list-container">
+
+        <div class="file-list-heading">
+            <strong>NAME</strong>
+            <strong>TYPE</strong>
+            <strong>ACTIONS</strong>
+        </div>
+
+        <div id="fileList">
+            <p class="file-empty">
+                Your file library is empty.
+                Upload a file or create a folder to begin.
+            </p>
+        </div>
+
+    </div>
+
+    <p id="fileManagerStatus"></p>
+
+</section>
+
             <!-- WORKSPACE -->
 
             <section class="view" id="view-workspace">
@@ -456,6 +559,11 @@
         <i data-lucide="grid-2x2"></i>
         <small>Apps</small>
     </button>
+
+<button class="nav-item" data-view="files">
+    <i data-lucide="folder"></i>
+    <small>Files</small>
+</button>
 
     <button class="nav-item" data-view="workspace">
         <i data-lucide="panels-top-left"></i>
