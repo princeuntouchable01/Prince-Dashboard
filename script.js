@@ -1299,6 +1299,18 @@ async function renderFileList() {
             const actions = document.createElement("div");
             actions.className = "file-actions";
 
+const isImage = item.type !== "folder" &&
+    (item.mime || item.blob?.type || "").startsWith("image/");
+
+const previewButton = document.createElement("button");
+previewButton.textContent = "VIEW";
+
+if (isImage) {
+    previewButton.addEventListener("click", () => {
+        openImagePreview(item);
+    });
+}
+
             const renameButton = document.createElement("button");
             renameButton.textContent = "RENAME";
 
@@ -1477,5 +1489,72 @@ async function initializeFileManager() {
 }
 
 initializeFileManager();
+
+/* =========================================
+   PRINCE OS v4.3 — IMAGE PREVIEW ENGINE
+========================================= */
+
+let activePreviewUrl = null;
+
+function openImagePreview(item) {
+
+    const modal = document.getElementById("filePreviewModal");
+    const image = document.getElementById("previewImage");
+    const title = document.getElementById("previewFileName");
+    const details = document.getElementById("previewFileDetails");
+
+    if (!modal || !image || !item.blob) {
+        console.error("Image preview unavailable.");
+        return;
+    }
+
+    if (activePreviewUrl) {
+        URL.revokeObjectURL(activePreviewUrl);
+    }
+
+    activePreviewUrl = URL.createObjectURL(item.blob);
+
+    image.src = activePreviewUrl;
+    title.textContent = item.name;
+    details.textContent = formatFileSize(item.size || 0);
+
+    modal.classList.add("active");
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+function closeImagePreview() {
+
+    const modal = document.getElementById("filePreviewModal");
+    const image = document.getElementById("previewImage");
+
+    modal.classList.remove("active");
+    image.src = "";
+
+    if (activePreviewUrl) {
+        URL.revokeObjectURL(activePreviewUrl);
+        activePreviewUrl = null;
+    }
+}
+
+document.getElementById("closeFilePreview")
+    ?.addEventListener("click", closeImagePreview);
+
+document.getElementById("filePreviewModal")
+    ?.addEventListener("click", event => {
+
+        if (event.target.id === "filePreviewModal") {
+            closeImagePreview();
+        }
+    });
+
+document.addEventListener("keydown", event => {
+
+    if (event.key === "Escape") {
+        closeImagePreview();
+    }
+});
 
 /* END OF PRINCE OS FILE MANAGER */
