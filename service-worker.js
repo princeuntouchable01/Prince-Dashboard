@@ -1,4 +1,4 @@
-const CACHE_NAME = "prince-os-v2";
+const CACHE_NAME = "prince-os-v3";
 
 const FILES_TO_CACHE = [
   "./",
@@ -34,10 +34,24 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
+// Network-first: users always get fresh content,
+// cache is only a fallback when offline
 self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") return;
+
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      return cachedResponse || fetch(event.request);
-    })
+    fetch(event.request)
+      .then(networkResponse => {
+        const copy = networkResponse.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, copy);
+        });
+        return networkResponse;
+      })
+      .catch(() =>
+        caches.match(event.request).then(cached => {
+          return cached || caches.match("./index.html");
+        })
+      )
   );
 });
