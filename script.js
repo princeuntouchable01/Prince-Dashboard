@@ -1305,6 +1305,33 @@ const isImage = item.type !== "folder" && (
     /\.(png|jpe?g|gif|webp|bmp|svg|avif)$/i.test(item.name)
 );
 
+const isPdf = item.type !== "folder" && (
+    (item.mime || item.blob?.type || "") === "application/pdf" ||
+    /\.pdf$/i.test(item.name)
+);
+
+if (isImage) {
+    const previewButton = document.createElement("button");
+    previewButton.textContent = "VIEW";
+
+    previewButton.addEventListener("click", () => {
+        openImagePreview(item);
+    });
+
+    actions.appendChild(previewButton);
+}
+
+if (isPdf) {
+    const pdfButton = document.createElement("button");
+    pdfButton.textContent = "OPEN PDF";
+
+    pdfButton.addEventListener("click", () => {
+        openPdfPreview(item);
+    });
+
+    actions.appendChild(pdfButton);
+}
+
 if (isImage) {
     const previewButton = document.createElement("button");
     previewButton.textContent = "VIEW";
