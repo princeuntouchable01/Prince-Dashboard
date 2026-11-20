@@ -917,7 +917,7 @@ function getInstalledApps() {
 
         return Array.isArray(apps) ? apps : [];
     } catch (error) {
-        console.error("Could not load installed apps:", error);
+        console.error("App loading error:", error);
         return [];
     }
 }
@@ -929,6 +929,14 @@ function saveInstalledApps(apps) {
     );
 }
 
+function setAppStatus(message) {
+    const status = document.getElementById("installAppStatus");
+
+    if (status) {
+        status.textContent = message;
+    }
+}
+
 function renderInstalledApps() {
     const grid = document.getElementById("installedAppsGrid");
     const count = document.getElementById("installedAppCount");
@@ -938,7 +946,6 @@ function renderInstalledApps() {
     const apps = getInstalledApps();
 
     grid.replaceChildren();
-
     count.textContent = `${apps.length} APPS`;
 
     apps.forEach(app => {
@@ -953,14 +960,19 @@ function renderInstalledApps() {
         name.textContent = app.name;
 
         const description = document.createElement("small");
-        description.textContent = app.description || "Installed application";
+        description.textContent =
+            app.description || "Installed application";
 
         const launchButton = document.createElement("button");
         launchButton.type = "button";
         launchButton.textContent = "LAUNCH";
 
         launchButton.addEventListener("click", () => {
-            window.open(app.url, "_blank", "noopener,noreferrer");
+            window.open(
+                app.url,
+                "_blank",
+                "noopener,noreferrer"
+            );
         });
 
         const removeButton = document.createElement("button");
@@ -974,23 +986,22 @@ function renderInstalledApps() {
 
             saveInstalledApps(updatedApps);
             renderInstalledApps();
-            setAppStatus(`${app.name} has been uninstalled.`);
+            setAppStatus(`${app.name} uninstalled.`);
         });
 
-        card.append(icon, name, description, launchButton, removeButton);
+        card.append(
+            icon,
+            name,
+            description,
+            launchButton,
+            removeButton
+        );
+
         grid.appendChild(card);
     });
 
     if (window.lucide) {
         lucide.createIcons();
-    }
-}
-
-function setAppStatus(message) {
-    const status = document.getElementById("installAppStatus");
-
-    if (status) {
-        status.textContent = message;
     }
 }
 
@@ -1012,13 +1023,59 @@ function initializeAppManager() {
         try {
             parsedUrl = new URL(rawUrl);
         } catch {
-            setAppStatus("Please enter a valid website address.");
+            setAppStatus("Enter a valid website address.");
             return;
         }
 
         if (!["https:", "http:"].includes(parsedUrl.protocol)) {
-            set
+            setAppStatus("Only HTTP and HTTPS websites are allowed.");
+            return;
+        }
 
-/* =========================================
-   END OF PRINCE OS v4.0 ENGINE
-========================================= */
+        if (!name) {
+            setAppStatus("Enter an application name.");
+            return;
+        }
+
+        const apps = getInstalledApps();
+
+        const duplicate = apps.some(app =>
+            app.name.toLowerCase() === name.toLowerCase() ||
+            app.url === parsedUrl.href
+        );
+
+        if (duplicate) {
+            setAppStatus("This application is already installed.");
+            return;
+        }
+
+        const validIcon = /^[a-z0-9-]{1,30}$/i.test(requestedIcon)
+            ? requestedIcon
+            : "app-window";
+
+        const newApp = {
+            id: window.crypto?.randomUUID
+                ? window.crypto.randomUUID()
+                : `${Date.now()}-${Math.random()}`,
+            name,
+            url: parsedUrl.href,
+            description,
+            icon: validIcon,
+            installedAt: new Date().toISOString()
+        };
+
+        apps.push(newApp);
+        saveInstalledApps(apps);
+
+        form.reset();
+
+        setAppStatus(`${name} installed successfully!`);
+        renderInstalledApps();
+    });
+
+    renderInstalledApps();
+}
+
+initializeAppManager();
+
+/* END OF PRINCE OS APP MANAGER */
