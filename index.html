@@ -8,10 +8,11 @@
     <title>Prince OS</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#050505">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Prince OS">
 </head>
 
 <body>
@@ -31,9 +32,15 @@
                 </div>
             </div>
 
-            <div class="system-info">
-                <div id="clock">00:00</div>
-                <div id="date">Loading...</div>
+            <div class="top-actions">
+                <button id="installBtn" class="install-btn" type="button" hidden>
+                    ⤓ INSTALL
+                </button>
+
+                <div class="system-info">
+                    <div id="clock">00:00</div>
+                    <div id="date">Loading...</div>
+                </div>
             </div>
 
         </header>
@@ -87,61 +94,85 @@
         </section>
 
 
-<section class="apps">
+        <section class="weather-panel">
 
-    <div class="section-heading">
-        <span>QUICK LAUNCH</span>
-    </div>
+            <div class="section-heading">
+                <span>WEATHER</span>
+                <span class="live-dot" id="weatherLoc">LOCATING…</span>
+            </div>
 
-    <div class="app-grid">
+            <div class="weather-card">
 
-        <a
-            class="app-card"
-            href="https://github.com/princeuntouchable01"
-            target="_blank"
-            rel="noopener"
-        >
-            <span class="app-icon">⌘</span>
-            <span class="app-name">GitHub</span>
-            <span class="app-description">Profile & repositories</span>
-        </a>
+                <div class="weather-main">
+                    <span id="weatherIcon">☀</span>
+                    <strong id="weatherTemp">--°</strong>
+                </div>
 
-        <a
-            class="app-card"
-            href="https://github.com/princeuntouchable01/TECH_PRO_PORTFOLIO-.git"
-            target="_blank"
-            rel="noopener"
-        >
-            <span class="app-icon">◈</span>
-            <span class="app-name">Portfolio</span>
-            <span class="app-description">Tech Pro portfolio</span>
-        </a>
+                <div class="weather-meta">
+                    <span id="weatherDesc">Detecting location…</span>
+                    <span id="weatherWind">Wind -- km/h</span>
+                </div>
 
-        <a
-            class="app-card"
-            href="https://github.com/princeuntouchable01/TP-AI.git"
-            target="_blank"
-            rel="noopener"
-        >
-            <span class="app-icon">✦</span>
-            <span class="app-name">TP-AI</span>
-            <span class="app-description">Tech Pro Intelligence</span>
-        </a>
+            </div>
 
-        <a
-            class="app-card"
-            href="https://github.com/princeuntouchable01/Weather_Generator.git"
-            target="_blank"
-            rel="noopener"
-        >
-            <span class="app-icon">☁</span>
-            <span class="app-name">Projects</span>
-            <span class="app-description">Weather Generator</span>
-        </a>
+        </section>
 
-    </div>
 
-</section>
+        <section class="apps">
+
+            <div class="section-heading">
+                <span>QUICK LAUNCH</span>
+            </div>
+
+            <div class="app-grid">
+
+                <a
+                    class="app-card"
+                    href="https://github.com/princeuntouchable01"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <span class="app-icon">⌘</span>
+                    <span class="app-name">GitHub</span>
+                    <span class="app-description">Profile & repositories</span>
+                </a>
+
+                <a
+                    class="app-card"
+                    href="https://github.com/princeuntouchable01/TECH_PRO_PORTFOLIO-.git"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <span class="app-icon">◈</span>
+                    <span class="app-name">Portfolio</span>
+                    <span class="app-description">Tech Pro portfolio</span>
+                </a>
+
+                <a
+                    class="app-card"
+                    href="https://github.com/princeuntouchable01/TP-AI.git"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <span class="app-icon">✦</span>
+                    <span class="app-name">TP-AI</span>
+                    <span class="app-description">Tech Pro Intelligence</span>
+                </a>
+
+                <a
+                    class="app-card"
+                    href="https://github.com/princeuntouchable01/Weather_Generator.git"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <span class="app-icon">☁</span>
+                    <span class="app-name">Projects</span>
+                    <span class="app-description">Weather Generator</span>
+                </a>
+
+            </div>
+
+        </section>
 
 
         <section class="command-panel">
@@ -157,7 +188,7 @@
                 <input
                     type="text"
                     id="commandInput"
-                    placeholder="Type a command..."
+                    placeholder='Type a command… try "help"'
                     autocomplete="off"
                 >
 
