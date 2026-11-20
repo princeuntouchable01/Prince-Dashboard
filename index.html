@@ -368,6 +368,38 @@
     </div>
 </div>
 
+<!-- PDF PREVIEW MODAL -->
+<div id="pdfPreviewModal" class="file-preview-modal">
+
+    <div class="file-preview-content pdf-preview-content">
+
+        <div class="file-preview-header">
+            <div>
+                <p class="eyebrow">PRINCE OS DOCUMENT VIEWER</p>
+                <h2 id="pdfPreviewName">PDF Document</h2>
+            </div>
+
+            <button id="closePdfPreview" class="preview-close">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <div class="pdf-preview-body">
+            <iframe
+                id="pdfFrame"
+                title="PDF Document Preview"
+                src="about:blank">
+            </iframe>
+        </div>
+
+        <div class="file-preview-footer">
+            <span id="pdfPreviewDetails">PDF DOCUMENT</span>
+        </div>
+
+    </div>
+
+</div>
+
     <!-- STORAGE OVERVIEW -->
 
     <div class="file-storage-card">
