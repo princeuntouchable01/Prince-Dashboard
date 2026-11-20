@@ -903,6 +903,121 @@ if (window.lucide) {
     lucide.createIcons();
 }
 
+/* =================================
+   PRINCE OS — APP MANAGER ENGINE
+================================= */
+
+const INSTALLED_APPS_KEY = "princeOS_installedApps";
+
+function getInstalledApps() {
+    try {
+        const apps = JSON.parse(
+            localStorage.getItem(INSTALLED_APPS_KEY) || "[]"
+        );
+
+        return Array.isArray(apps) ? apps : [];
+    } catch (error) {
+        console.error("Could not load installed apps:", error);
+        return [];
+    }
+}
+
+function saveInstalledApps(apps) {
+    localStorage.setItem(
+        INSTALLED_APPS_KEY,
+        JSON.stringify(apps)
+    );
+}
+
+function renderInstalledApps() {
+    const grid = document.getElementById("installedAppsGrid");
+    const count = document.getElementById("installedAppCount");
+
+    if (!grid || !count) return;
+
+    const apps = getInstalledApps();
+
+    grid.replaceChildren();
+
+    count.textContent = `${apps.length} APPS`;
+
+    apps.forEach(app => {
+        const card = document.createElement("div");
+        card.className = "app-card installed-app-card";
+
+        const icon = document.createElement("i");
+        icon.setAttribute("data-lucide", app.icon || "app-window");
+        icon.className = "app-card-icon";
+
+        const name = document.createElement("strong");
+        name.textContent = app.name;
+
+        const description = document.createElement("small");
+        description.textContent = app.description || "Installed application";
+
+        const launchButton = document.createElement("button");
+        launchButton.type = "button";
+        launchButton.textContent = "LAUNCH";
+
+        launchButton.addEventListener("click", () => {
+            window.open(app.url, "_blank", "noopener,noreferrer");
+        });
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.textContent = "UNINSTALL";
+
+        removeButton.addEventListener("click", () => {
+            const updatedApps = getInstalledApps().filter(
+                item => item.id !== app.id
+            );
+
+            saveInstalledApps(updatedApps);
+            renderInstalledApps();
+            setAppStatus(`${app.name} has been uninstalled.`);
+        });
+
+        card.append(icon, name, description, launchButton, removeButton);
+        grid.appendChild(card);
+    });
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+function setAppStatus(message) {
+    const status = document.getElementById("installAppStatus");
+
+    if (status) {
+        status.textContent = message;
+    }
+}
+
+function initializeAppManager() {
+    const form = document.getElementById("installAppForm");
+
+    if (!form) return;
+
+    form.addEventListener("submit", event => {
+        event.preventDefault();
+
+        const name = document.getElementById("newAppName").value.trim();
+        const rawUrl = document.getElementById("newAppUrl").value.trim();
+        const description = document.getElementById("newAppDescription").value.trim();
+        const requestedIcon = document.getElementById("newAppIcon").value.trim();
+
+        let parsedUrl;
+
+        try {
+            parsedUrl = new URL(rawUrl);
+        } catch {
+            setAppStatus("Please enter a valid website address.");
+            return;
+        }
+
+        if (!["https:", "http:"].includes(parsedUrl.protocol)) {
+            set
 
 /* =========================================
    END OF PRINCE OS v4.0 ENGINE
