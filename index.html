@@ -225,6 +225,69 @@
                     <p>Your digital tools in one place.</p>
                 </div>
 
+<!-- APP INSTALLER -->
+
+<div class="app-install-panel">
+
+    <div class="app-install-heading">
+        <div>
+            <h2>Install a Web App</h2>
+            <p>Add new applications to your PRINCE OS library.</p>
+        </div>
+
+        <i data-lucide="package-plus"></i>
+    </div>
+
+    <form id="installAppForm" class="app-install-form">
+
+        <input
+            id="newAppName"
+            type="text"
+            placeholder="Application name"
+            maxlength="32"
+            required
+        >
+
+        <input
+            id="newAppUrl"
+            type="url"
+            placeholder="https://example.com"
+            required
+        >
+
+        <input
+            id="newAppDescription"
+            type="text"
+            placeholder="Short description"
+            maxlength="80"
+        >
+
+        <input
+            id="newAppIcon"
+            type="text"
+            placeholder="Icon name (e.g. globe)"
+        >
+
+        <button type="submit" class="install-app-button">
+            <i data-lucide="plus"></i>
+            INSTALL APPLICATION
+        </button>
+
+    </form>
+
+    <p id="installAppStatus"></p>
+
+</div>
+
+<!-- INSTALLED APPLICATIONS -->
+
+<div class="section-heading">
+    <h2>My Installed Apps</h2>
+    <span id="installedAppCount">0 APPS</span>
+</div>
+
+<div id="installedAppsGrid" class="app-grid"></div>
+
                 <div class="app-grid">
 
                     <a class="app-card"
