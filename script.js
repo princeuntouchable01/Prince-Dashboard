@@ -1299,8 +1299,10 @@ async function renderFileList() {
             const actions = document.createElement("div");
             actions.className = "file-actions";
 
-const isImage = item.type !== "folder" &&
-    (item.mime || item.blob?.type || "").startsWith("image/");
+const isImage = item.type !== "folder" && (
+    (item.mime || item.blob?.type || "").startsWith("image/") ||
+    /\.(png|jpe?g|gif|webp|bmp|svg|avif)$/i.test(item.name)
+);
 
 const previewButton = document.createElement("button");
 previewButton.textContent = "VIEW";
