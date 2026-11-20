@@ -3,274 +3,430 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#050505">
-    <meta name="description" content="Prince OS — Personal Command Dashboard">
-    <title>Prince OS</title>
+
+    <meta name="theme-color" content="#08090d">
+    <meta name="description" content="PRINCE OS — Personal Digital Operating System">
+
+    <title>PRINCE OS v4.0</title>
+
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
+
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Prince OS">
 </head>
 
 <body>
 
-    <main class="dashboard">
+<div class="os-shell">
+
+    <!-- DESKTOP SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <span class="brand-mark">♛</span>
+            <div>
+                <strong>PRINCE OS</strong>
+                <small>VERSION 4.0</small>
+            </div>
+        </div>
+
+        <div class="sidebar-label">WORKSPACE</div>
+
+        <nav class="navigation">
+
+            <button class="nav-item active" data-view="home">
+                <span>⌂</span> Home
+            </button>
+
+            <button class="nav-item" data-view="apps">
+                <span>▦</span> Applications
+            </button>
+
+            <button class="nav-item" data-view="workspace">
+                <span>◫</span> Workspace
+            </button>
+
+            <button class="nav-item" data-view="tasks">
+                <span>✓</span> Tasks
+            </button>
+
+            <button class="nav-item" data-view="settings">
+                <span>⚙</span> Settings
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="system-indicator"></span>
+            SYSTEM OPERATIONAL
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN INTERFACE -->
+
+    <main class="main-area">
+
+        <!-- TOP BAR -->
 
         <header class="top-bar">
 
-            <div class="brand">
+            <div class="top-brand">
                 <span class="brand-mark">♛</span>
-
-                <div>
-                    <div class="brand-name">PRINCE OS</div>
-                    <div class="brand-status">
-                        PERSONAL COMMAND CENTER
-                    </div>
-                </div>
+                <strong>PRINCE OS</strong>
             </div>
 
-            <div class="top-actions">
-                <button id="installBtn" class="install-btn" type="button" hidden>
-                    ⤓ INSTALL
-                </button>
-
-                <div class="system-info">
-                    <div id="clock">00:00</div>
-                    <div id="date">Loading...</div>
-                </div>
+            <div class="system-info">
+                <span id="network">ONLINE</span>
+                <span id="battery">--%</span>
+                <strong id="clock">00:00</strong>
             </div>
 
         </header>
 
 
-        <section class="hero">
+        <!-- PAGE CONTENT -->
 
-            <div class="hero-content">
+        <div class="page-container">
 
-                <p class="eyebrow">
-                    WELCOME BACK
+            <!-- HOME -->
+
+            <section class="view active" id="view-home">
+
+                <div class="welcome-section">
+                    <p class="eyebrow" id="greeting">
+                        WELCOME BACK
+                    </p>
+
+                    <h1>Welcome, Prince.</h1>
+
+                    <p>Your digital command center is ready.</p>
+
+                    <span id="date">Loading date...</span>
+                </div>
+
+
+                <div class="section-heading">
+                    <h2>System Overview</h2>
+                    <span class="live-status">● LIVE</span>
+                </div>
+
+                <div class="overview-grid">
+
+                    <article class="overview-card">
+                        <span>◈</span>
+                        <small>SYSTEM</small>
+                        <strong>PRINCE OS</strong>
+                    </article>
+
+                    <article class="overview-card">
+                        <span>⌁</span>
+                        <small>NETWORK</small>
+                        <strong id="networkCard">ONLINE</strong>
+                    </article>
+
+                    <article class="overview-card">
+                        <span>▣</span>
+                        <small>BATTERY</small>
+                        <strong id="batteryCard">--%</strong>
+                    </article>
+
+                </div>
+
+
+                <div class="section-heading">
+                    <h2>Quick Launch</h2>
+                    <button class="text-button" data-go="apps">
+                        View all →
+                    </button>
+                </div>
+
+                <div class="quick-apps">
+
+                    <a href="https://github.com/princeuntouchable01"
+                       target="_blank" rel="noopener">
+                        <span>⌘</span>
+                        GitHub
+                    </a>
+
+                    <a href="https://prince-port.lovable.app"
+                       target="_blank" rel="noopener">
+                        <span>◈</span>
+                        Portfolio
+                    </a>
+
+                    <a href="https://tp-ai-eta.vercel.app"
+                       target="_blank" rel="noopener">
+                        <span>✦</span>
+                        TP-AI
+                    </a>
+
+                </div>
+
+
+                <div class="section-heading">
+                    <h2>Weather</h2>
+                    <span id="weatherLoc">LOCATING...</span>
+                </div>
+
+                <div class="weather-card">
+                    <div>
+                        <span id="weatherIcon">☀</span>
+                        <strong id="weatherTemp">--°C</strong>
+                    </div>
+
+                    <div>
+                        <p id="weatherDesc">Checking weather...</p>
+                        <small id="weatherWind">Wind -- km/h</small>
+                    </div>
+                </div>
+
+
+                <div class="section-heading">
+                    <h2>Command Centre</h2>
+                </div>
+
+                <div class="command-box">
+                    <span>›</span>
+
+                    <input
+                        id="commandInput"
+                        type="text"
+                        placeholder="Enter a command..."
+                        autocomplete="off"
+                    >
+
+                    <button id="commandButton">RUN</button>
+                </div>
+
+                <p id="commandOutput">
+                    Awaiting command...
                 </p>
 
-                <h1>Prince</h1>
-
-                <p class="hero-text">
-                    Your digital command center is ready.
-                </p>
-
-            </div>
-
-        </section>
+            </section>
 
 
-        <section class="system-panel">
+            <!-- APPLICATIONS -->
 
-            <div class="section-heading">
-                <span>SYSTEM STATUS</span>
-                <span class="live-dot">● LIVE</span>
-            </div>
+            <section class="view" id="view-apps">
 
-            <div class="status-grid">
-
-                <div class="status-card">
-                    <span class="status-label">BATTERY</span>
-                    <strong id="battery">--%</strong>
+                <div class="page-heading">
+                    <p class="eyebrow">APPLICATION MANAGER</p>
+                    <h1>Applications</h1>
+                    <p>Your digital tools in one place.</p>
                 </div>
 
-                <div class="status-card">
-                    <span class="status-label">NETWORK</span>
-                    <strong id="network">ONLINE</strong>
+                <div class="app-grid">
+
+                    <a class="app-card"
+                       href="https://github.com/princeuntouchable01"
+                       target="_blank" rel="noopener">
+                        <span>⌘</span>
+                        <strong>GitHub</strong>
+                        <small>Code and repositories</small>
+                    </a>
+
+                    <a class="app-card"
+                       href="https://prince-port.lovable.app"
+                       target="_blank" rel="noopener">
+                        <span>◈</span>
+                        <strong>Portfolio</strong>
+                        <small>Personal portfolio</small>
+                    </a>
+
+                    <a class="app-card"
+                       href="https://tp-ai-eta.vercel.app"
+                       target="_blank" rel="noopener">
+                        <span>✦</span>
+                        <strong>TP-AI</strong>
+                        <small>Artificial intelligence</small>
+                    </a>
+
+                    <a class="app-card"
+                       href="https://github.com/princeuntouchable01/Prince-Dashboard"
+                       target="_blank" rel="noopener">
+                        <span>♛</span>
+                        <strong>Prince OS</strong>
+                        <small>System repository</small>
+                    </a>
+
                 </div>
 
-                <div class="status-card">
-                    <span class="status-label">SYSTEM</span>
-                    <strong>PRINCE OS</strong>
+            </section>
+
+
+            <!-- WORKSPACE -->
+
+            <section class="view" id="view-workspace">
+
+                <div class="page-heading">
+                    <p class="eyebrow">PERSONAL WORKSPACE</p>
+                    <h1>Workspace</h1>
+                    <p>A place for your ideas and projects.</p>
                 </div>
 
-            </div>
+                <div class="workspace-card">
+                    <h2>My Notes</h2>
 
-        </section>
+                    <textarea
+                        id="notesInput"
+                        placeholder="Write down your ideas..."
+                    ></textarea>
 
+                    <button id="saveNotes">SAVE NOTES</button>
 
-        <section class="weather-panel">
-
-            <div class="section-heading">
-                <span>WEATHER</span>
-                <span class="live-dot" id="weatherLoc">LOCATING…</span>
-            </div>
-
-            <div class="weather-card">
-
-                <div class="weather-main">
-                    <span id="weatherIcon">☀</span>
-                    <strong id="weatherTemp">--°</strong>
+                    <p id="notesStatus"></p>
                 </div>
 
-                <div class="weather-meta">
-                    <span id="weatherDesc">Detecting location…</span>
-                    <span id="weatherWind">Wind -- km/h</span>
+                <div class="workspace-card">
+                    <h2>Project Space</h2>
+                    <p>Your project management tools are coming soon.</p>
                 </div>
 
-            </div>
-
-        </section>
+            </section>
 
 
-        <section class="apps">
+            <!-- TASKS -->
 
-            <div class="section-heading">
-                <span>QUICK LAUNCH</span>
-            </div>
+            <section class="view" id="view-tasks">
 
-            <div class="app-grid">
+                <div class="page-heading">
+                    <p class="eyebrow">PRODUCTIVITY</p>
+                    <h1>My Tasks</h1>
+                    <p>Keep track of what matters.</p>
+                </div>
 
-                <a
-                    class="app-card"
-                    href="https://github.com/princeuntouchable01"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    <span class="app-icon">⌘</span>
-                    <span class="app-name">GitHub</span>
-                    <span class="app-description">Profile & repositories</span>
-                </a>
+                <div class="task-card">
 
-                <a
-                    class="app-card"
-                    href="https://github.com/princeuntouchable01/TECH_PRO_PORTFOLIO-.git"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    <span class="app-icon">◈</span>
-                    <span class="app-name">Portfolio</span>
-                    <span class="app-description">Tech Pro portfolio</span>
-                </a>
+                    <div class="task-input">
+                        <input
+                            id="taskInput"
+                            type="text"
+                            placeholder="Add a new task..."
+                        >
 
-                <a
-                    class="app-card"
-                    href="https://github.com/princeuntouchable01/TP-AI.git"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    <span class="app-icon">✦</span>
-                    <span class="app-name">TP-AI</span>
-                    <span class="app-description">Tech Pro Intelligence</span>
-                </a>
+                        <button id="addTask">ADD</button>
+                    </div>
 
-                <a
-                    class="app-card"
-                    href="https://github.com/princeuntouchable01/Weather_Generator.git"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    <span class="app-icon">☁</span>
-                    <span class="app-name">Projects</span>
-                    <span class="app-description">Weather Generator</span>
-                </a>
+                    <div id="taskList"></div>
 
-            </div>
+                </div>
 
-        </section>
+            </section>
 
-        <section class="settings-panel">
+            <!-- SETTINGS -->
 
-            <div class="section-heading">
-                <span>THEME</span>
-                <span class="live-dot" id="themeName">GOLD</span>
-            </div>
+            <section class="view" id="view-settings">
 
-            <div class="theme-row">
+                <div class="page-heading">
+                    <p class="eyebrow">SYSTEM CONFIGURATION</p>
+                    <h1>Settings</h1>
+                    <p>Personalise your environment.</p>
+                </div>
 
-                <button class="theme-swatch active" data-theme="gold" type="button">
-                    <span class="theme-dot dot-gold"></span>
-                    GOLD
-                </button>
+                <div class="settings-card">
 
-                <button class="theme-swatch" data-theme="platinum" type="button">
-                    <span class="theme-dot dot-platinum"></span>
-                    PLATINUM
-                </button>
+                    <h2>Appearance</h2>
+                    <p>Choose your system accent colour.</p>
 
-                <button class="theme-swatch" data-theme="sapphire" type="button">
-                    <span class="theme-dot dot-sapphire"></span>
-                    SAPPHIRE
-                </button>
+                    <div class="theme-row">
 
-                <button class="theme-swatch" data-theme="amethyst" type="button">
-                    <span class="theme-dot dot-amethyst"></span>
-                    AMETHYST
-                </button>
+                        <button class="theme-swatch active"
+                                data-theme="gold">
+                            GOLD
+                        </button>
 
-                <button class="theme-swatch" data-theme="emerald" type="button">
-                    <span class="theme-dot dot-emerald"></span>
-                    EMERALD
-                </button>
+                        <button class="theme-swatch"
+                                data-theme="platinum">
+                            PLATINUM
+                        </button>
 
-            </div>
+                        <button class="theme-swatch"
+                                data-theme="sapphire">
+                            SAPPHIRE
+                        </button>
 
-        </section>
+                        <button class="theme-swatch"
+                                data-theme="amethyst">
+                            AMETHYST
+                        </button>
+
+                        <button class="theme-swatch"
+                                data-theme="emerald">
+                            EMERALD
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="settings-card">
+                    <h2>About PRINCE OS</h2>
+                    <p>Version 4.0 — Personal Digital Operating System.</p>
+                    <p>Built with HTML, CSS and JavaScript.</p>
+                </div>
+
+            </section>
+
+        </div>
 
 
+        <!-- MOBILE BOTTOM NAVIGATION -->
 
-        <section class="command-panel">
+        <nav class="bottom-navigation">
 
-            <div class="section-heading">
-                <span>COMMAND CENTER</span>
-            </div>
+            <button class="nav-item active" data-view="home">
+                <span>⌂</span>
+                <small>Home</small>
+            </button>
 
-            <div class="command-box">
+            <button class="nav-item" data-view="apps">
+                <span>▦</span>
+                <small>Apps</small>
+            </button>
 
-                <span class="command-prefix">›</span>
+            <button class="nav-item" data-view="workspace">
+                <span>◫</span>
+                <small>Work</small>
+            </button>
 
-                <input
-                    type="text"
-                    id="commandInput"
-                    placeholder='Type a command… try "help"'
-                    autocomplete="off"
-                >
+            <button class="nav-item" data-view="tasks">
+                <span>✓</span>
+                <small>Tasks</small>
+            </button>
 
-                <button
-                    id="commandButton"
-                    type="button"
-                >
-                    RUN
-                </button>
+            <button class="nav-item" data-view="settings">
+                <span>⚙</span>
+                <small>Settings</small>
+            </button>
 
-            </div>
-
-            <p
-                id="commandOutput"
-                class="command-output"
-            >
-                Awaiting command...
-            </p>
-
-        </section>
-
-
-        <footer class="footer">
-
-            <span>PRINCE OS</span>
-            <span>BLACK × GOLD × WHITE</span>
-            <span>© 2026</span>
-
-        </footer>
+        </nav>
 
     </main>
 
-    <script src="script.js"></script>
+</div>
 
-    <script>
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("service-worker.js")
-                    .then(() => console.log("Prince OS service worker registered"))
-                    .catch(error => console.error("Service worker registration failed:", error));
-            });
-        }
-    </script>
+
+<!-- MAIN JAVASCRIPT -->
+
+<script src="script.js"></script>
+
+
+<!-- SERVICE WORKER -->
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+            .catch(error => console.error(error));
+    });
+}
+</script>
 
 </body>
 </html>
