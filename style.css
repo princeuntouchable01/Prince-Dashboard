@@ -1138,3 +1138,28 @@ textarea:focus-visible {
 .bottom-navigation .nav-item small {
     font-size: 10px;
 }
+
+/* QUICK LAUNCH LUCIDE ICONS */
+
+.quick-apps a i {
+    width: 23px;
+    height: 23px;
+    color: var(--accent);
+    stroke-width: 1.8;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.quick-apps a:hover i {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 7px var(--accent));
+}
+
+/* BRAND ICON ALIGNMENT */
+
+.brand-mark i {
+    width: 25px;
+    height: 25px;
+    color: var(--accent);
+    stroke-width: 1.8;
+}
