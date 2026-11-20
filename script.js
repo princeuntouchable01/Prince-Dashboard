@@ -1296,56 +1296,59 @@ async function renderFileList() {
                 ? "FOLDER"
                 : formatFileSize(item.size || 0);
 
-            const actions = document.createElement("div");
-            actions.className = "file-actions";
+            
+const actions = document.createElement("div");
+actions.className = "file-actions";
 
 const isImage = item.type !== "folder" && (
     (item.mime || item.blob?.type || "").startsWith("image/") ||
     /\.(png|jpe?g|gif|webp|bmp|svg|avif)$/i.test(item.name)
 );
 
-const previewButton = document.createElement("button");
-previewButton.textContent = "VIEW";
-
 if (isImage) {
+    const previewButton = document.createElement("button");
+    previewButton.textContent = "VIEW";
+
     previewButton.addEventListener("click", () => {
         openImagePreview(item);
     });
+
+    actions.appendChild(previewButton);
 }
 
-            const renameButton = document.createElement("button");
-            renameButton.textContent = "RENAME";
+const renameButton = document.createElement("button");
+renameButton.textContent = "RENAME";
 
-            renameButton.addEventListener("click", async () => {
+renameButton.addEventListener("click", async () => {
 
-                const newName = prompt("Enter the new name:", item.name);
+    const newName = prompt("Enter the new name:", item.name);
 
-                if (!newName || !newName.trim()) return;
+    if (!newName || !newName.trim()) return;
 
-                item.name = newName.trim();
+    item.name = newName.trim();
 
-                await saveFileItem(item);
+    await saveFileItem(item);
 
-                setFileStatus("Item renamed successfully.");
+    setFileStatus("Item renamed successfully.");
 
-                renderFileList();
-            });
+    renderFileList();
+});
 
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "DELETE";
+const deleteButton = document.createElement("button");
+deleteButton.textContent = "DELETE";
 
-            deleteButton.addEventListener("click", async () => {
+deleteButton.addEventListener("click", async () => {
 
-                if (!confirm(`Delete ${item.name}?`)) return;
+    if (!confirm(`Delete ${item.name}?`)) return;
 
-                await deleteFileItem(item.id);
+    await deleteFileItem(item.id);
 
-                setFileStatus("Item deleted.");
+    setFileStatus("Item deleted.");
 
-                renderFileList();
-            });
+    renderFileList();
+});
 
-            actions.append(renameButton, deleteButton);
+actions.append(renameButton, deleteButton);
 
             row.append(nameArea, type, actions);
 
