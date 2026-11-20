@@ -1078,4 +1078,404 @@ function initializeAppManager() {
 
 initializeAppManager();
 
-/* END OF PRINCE OS APP MANAGER */
+/* =========================================
+   PRINCE OS v4.2 — FILE MANAGER ENGINE
+========================================= */
+
+const FILE_DB_NAME = "PrinceOS_FileSystem";
+const FILE_STORE = "files";
+
+let fileDatabase = null;
+let activeFileFilter = "all";
+
+// OPEN DATABASE
+
+function openFileDatabase() {
+    return new Promise((resolve, reject) => {
+
+        const request = indexedDB.open(FILE_DB_NAME, 1);
+
+        request.onupgradeneeded = event => {
+            const db = event.target.result;
+
+            if (!db.objectStoreNames.contains(FILE_STORE)) {
+                db.createObjectStore(FILE_STORE, {
+                    keyPath: "id"
+                });
+            }
+        };
+
+        request.onsuccess = event => {
+            fileDatabase = event.target.result;
+            resolve(fileDatabase);
+        };
+
+        request.onerror = () => {
+            reject(request.error);
+        };
+    });
+}
+
+// DATABASE TRANSACTION
+
+function fileTransaction(mode, action) {
+    return new Promise((resolve, reject) => {
+
+        const transaction = fileDatabase.transaction(
+            FILE_STORE,
+            mode
+        );
+
+        const store = transaction.objectStore(FILE_STORE);
+        const request = action(store);
+
+        request.onsuccess = () => resolve(request.result);
+
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// GET ALL FILES
+
+async function getAllFiles() {
+    return await fileTransaction("readonly", store => {
+        return store.getAll();
+    });
+}
+
+// SAVE FILE OR FOLDER
+
+async function saveFileItem(item) {
+    return await fileTransaction("readwrite", store => {
+        return store.put(item);
+    });
+}
+
+// DELETE FILE OR FOLDER
+
+async function deleteFileItem(id) {
+    return await fileTransaction("readwrite", store => {
+        return store.delete(id);
+    });
+}
+
+// STATUS MESSAGE
+
+function setFileStatus(message) {
+    const status = document.getElementById("fileManagerStatus");
+
+    if (status) {
+        status.textContent = message;
+    }
+}
+
+// GENERATE ID
+
+function generateFileId() {
+    return window.crypto?.randomUUID
+        ? window.crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+}
+
+// FILE SIZE FORMAT
+
+function formatFileSize(bytes) {
+
+    if (bytes < 1024) return `${bytes} B`;
+
+    if (bytes < 1024 * 1024) {
+        return `${(bytes / 1024).toFixed(1)} KB`;
+    }
+
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+// DETERMINE FILE CATEGORY
+
+function getFileCategory(item) {
+
+    if (item.type === "folder") return "folders";
+
+    if (item.mime?.startsWith("image/")) {
+        return "images";
+    }
+
+    return "documents";
+}
+
+// FILE ICON
+
+function getFileIcon(item) {
+
+    if (item.type === "folder") return "folder";
+
+    if (item.mime?.startsWith("image/")) return "image";
+
+    if (item.mime?.includes("pdf")) return "file-text";
+
+    return "file";
+}
+
+// RENDER FILE LIST
+
+async function renderFileList() {
+
+    const fileList = document.getElementById("fileList");
+    const fileCount = document.getElementById("fileCount");
+
+    if (!fileList || !fileCount || !fileDatabase) return;
+
+    try {
+
+        const files = await getAllFiles();
+
+        const search = document
+            .getElementById("fileSearch")
+            .value.toLowerCase()
+            .trim();
+
+        const filteredFiles = files.filter(item => {
+
+            const matchesSearch = item.name
+                .toLowerCase()
+                .includes(search);
+
+            const matchesCategory =
+                activeFileFilter === "all" ||
+                getFileCategory(item) === activeFileFilter;
+
+            return matchesSearch && matchesCategory;
+        });
+
+        fileCount.textContent = `${files.length} ITEMS`;
+
+        fileList.replaceChildren();
+
+        if (filteredFiles.length === 0) {
+
+            const empty = document.createElement("p");
+
+            empty.className = "file-empty";
+
+            empty.textContent = files.length === 0
+                ? "Your file library is empty. Upload a file or create a folder to begin."
+                : "No matching items found.";
+
+            fileList.appendChild(empty);
+
+            return;
+        }
+
+        filteredFiles.sort((a, b) => {
+
+            if (a.type === "folder" && b.type !== "folder") return -1;
+            if (a.type !== "folder" && b.type === "folder") return 1;
+
+            return a.name.localeCompare(b.name);
+        });
+
+        filteredFiles.forEach(item => {
+
+            const row = document.createElement("div");
+            row.className = "file-row";
+
+            const nameArea = document.createElement("div");
+            nameArea.className = "file-name-area";
+
+            const icon = document.createElement("i");
+            icon.setAttribute("data-lucide", getFileIcon(item));
+
+            const name = document.createElement("strong");
+            name.textContent = item.name;
+
+            nameArea.append(icon, name);
+
+            const type = document.createElement("span");
+            type.className = "file-type";
+            type.textContent = item.type === "folder"
+                ? "FOLDER"
+                : formatFileSize(item.size || 0);
+
+            const actions = document.createElement("div");
+            actions.className = "file-actions";
+
+            const renameButton = document.createElement("button");
+            renameButton.textContent = "RENAME";
+
+            renameButton.addEventListener("click", async () => {
+
+                const newName = prompt("Enter the new name:", item.name);
+
+                if (!newName || !newName.trim()) return;
+
+                item.name = newName.trim();
+
+                await saveFileItem(item);
+
+                setFileStatus("Item renamed successfully.");
+
+                renderFileList();
+            });
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "DELETE";
+
+            deleteButton.addEventListener("click", async () => {
+
+                if (!confirm(`Delete ${item.name}?`)) return;
+
+                await deleteFileItem(item.id);
+
+                setFileStatus("Item deleted.");
+
+                renderFileList();
+            });
+
+            actions.append(renameButton, deleteButton);
+
+            row.append(nameArea, type, actions);
+
+            fileList.appendChild(row);
+        });
+
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
+    } catch (error) {
+
+        console.error("File rendering error:", error);
+
+        setFileStatus("Could not display your files.");
+    }
+}
+
+// CREATE FOLDER
+
+async function createFileFolder() {
+
+    const name = prompt("Enter folder name:");
+
+    if (!name || !name.trim()) return;
+
+    const folder = {
+        id: generateFileId(),
+        name: name.trim(),
+        type: "folder",
+        createdAt: new Date().toISOString()
+    };
+
+    await saveFileItem(folder);
+
+    setFileStatus(`${folder.name} created successfully.`);
+
+    renderFileList();
+}
+
+// UPLOAD FILES
+
+async function uploadFiles(event) {
+
+    const selectedFiles = Array.from(event.target.files);
+
+    if (!selectedFiles.length) return;
+
+    try {
+
+        for (const file of selectedFiles) {
+
+            const item = {
+                id: generateFileId(),
+                name: file.name,
+                type: "file",
+                mime: file.type || "application/octet-stream",
+                size: file.size,
+                blob: file,
+                createdAt: new Date().toISOString()
+            };
+
+            await saveFileItem(item);
+        }
+
+        setFileStatus(
+            `${selectedFiles.length} file(s) uploaded successfully.`
+        );
+
+        event.target.value = "";
+
+        renderFileList();
+
+    } catch (error) {
+
+        console.error("Upload error:", error);
+
+        setFileStatus(
+            "Upload failed. Browser storage may be full or unavailable."
+        );
+    }
+}
+
+// FILTER BUTTONS
+
+document.querySelectorAll(".file-filter").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        activeFileFilter = button.dataset.filter;
+
+        document.querySelectorAll(".file-filter").forEach(filter => {
+            filter.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        renderFileList();
+    });
+});
+
+// SEARCH
+
+document.getElementById("fileSearch")?.addEventListener(
+    "input",
+    renderFileList
+);
+
+// CREATE FOLDER BUTTON
+
+document.getElementById("createFolderBtn")?.addEventListener(
+    "click",
+    createFileFolder
+);
+
+// UPLOAD BUTTON
+
+document.getElementById("fileUpload")?.addEventListener(
+    "change",
+    uploadFiles
+);
+
+// INITIALIZE FILE MANAGER
+
+async function initializeFileManager() {
+
+    try {
+
+        await openFileDatabase();
+
+        await renderFileList();
+
+        console.log("PRINCE OS File Manager initialized.");
+
+    } catch (error) {
+
+        console.error("File Manager initialization failed:", error);
+
+        setFileStatus(
+            "File storage could not initialize in this browser."
+        );
+    }
+}
+
+initializeFileManager();
+
+/* END OF PRINCE OS FILE MANAGER */
