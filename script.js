@@ -1332,17 +1332,6 @@ if (isPdf) {
     actions.appendChild(pdfButton);
 }
 
-if (isImage) {
-    const previewButton = document.createElement("button");
-    previewButton.textContent = "VIEW";
-
-    previewButton.addEventListener("click", () => {
-        openImagePreview(item);
-    });
-
-    actions.appendChild(previewButton);
-}
-
 const renameButton = document.createElement("button");
 renameButton.textContent = "RENAME";
 
