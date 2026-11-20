@@ -1,379 +1,912 @@
 /* =========================================
-   PRINCE OS — CORE RUNTIME v3
-   ========================================= */
+   PRINCE OS v4.0
+   CORE SYSTEM ENGINE
+========================================= */
+
+"use strict";
 
 
-/* ---------- ELEMENTS ---------- */
+/* =========================================
+   1. SYSTEM CONFIGURATION
+========================================= */
 
-const clockEl = document.getElementById("clock");
-const dateEl = document.getElementById("date");
-const networkEl = document.getElementById("network");
-const batteryEl = document.getElementById("battery");
+const CONFIG = {
+    version: "4.0",
+    storage: {
+        theme: "princeOS_theme",
+        notes: "princeOS_notes",
+        tasks: "princeOS_tasks"
+    }
+};
 
 
-/* ---------- CLOCK / DATE / NETWORK ---------- */
+/* =========================================
+   2. DOM HELPERS
+========================================= */
 
-function updateSystemStatus() {
+const $ = (selector) => document.querySelector(selector);
+
+const $$ = (selector) => document.querySelectorAll(selector);
+
+
+/* =========================================
+   3. NAVIGATION ENGINE
+========================================= */
+
+function navigateTo(viewName) {
+
+    const target = $(`#view-${viewName}`);
+
+    if (!target) return;
+
+    // Hide all views
+
+    $$(".view").forEach(view => {
+        view.classList.remove("active");
+    });
+
+    // Show selected view
+
+    target.classList.add("active");
+
+    // Update navigation buttons
+
+    $$(".nav-item").forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.view === viewName
+        );
+
+    });
+
+    // Save last visited section
+
+    localStorage.setItem(
+        "princeOS_lastView",
+        viewName
+    );
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+// Navigation listeners
+
+$$("[data-view]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        navigateTo(button.dataset.view);
+
+    });
+
+});
+
+
+$$("[data-go]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        navigateTo(button.dataset.go);
+
+    });
+
+});
+
+
+/* =========================================
+   4. CLOCK AND DATE ENGINE
+========================================= */
+
+function updateClock() {
+
     const now = new Date();
 
-    if (clockEl) {
-        clockEl.textContent = now.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-        });
+    const clock = $("#clock");
+    const date = $("#date");
+    const greeting = $("#greeting");
+
+    if (clock) {
+
+        clock.textContent = now.toLocaleTimeString(
+            "en-GB",
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
     }
 
-    if (dateEl) {
-        dateEl.textContent = now.toLocaleDateString([], {
-            weekday: "long",
-            month: "short",
-            day: "numeric"
-        });
+    if (date) {
+
+        date.textContent = now.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
     }
 
-    if (networkEl) {
-        const online = navigator.onLine;
-        networkEl.textContent = online ? "ONLINE" : "OFFLINE";
-        networkEl.style.color = online ? "" : "#e06c5b";
+    if (greeting) {
+
+        const hour = now.getHours();
+
+        let message = "WELCOME BACK";
+
+        if (hour < 12) {
+            message = "GOOD MORNING";
+        } else if (hour < 17) {
+            message = "GOOD AFTERNOON";
+        } else {
+            message = "GOOD EVENING";
+        }
+
+        greeting.textContent = message;
+
     }
+
 }
 
-updateSystemStatus();
-setInterval(updateSystemStatus, 1000);
-window.addEventListener("online", updateSystemStatus);
-window.addEventListener("offline", updateSystemStatus);
+updateClock();
+
+setInterval(updateClock, 1000);
 
 
-/* ---------- TIME-AWARE GREETING ---------- */
+/* =========================================
+   5. BATTERY MONITOR
+========================================= */
 
-(function greet() {
-    const hour = new Date().getHours();
+async function initializeBattery() {
 
-    let greeting = "Good evening";
-    if (hour < 12) greeting = "Good morning";
-    else if (hour < 17) greeting = "Good afternoon";
+    const batteryTop = $("#battery");
+    const batteryCard = $("#batteryCard");
 
-    const eyebrow = document.querySelector(".eyebrow");
-    if (eyebrow) {
-        eyebrow.textContent = greeting.toUpperCase() + " — WELCOME BACK";
+    if (!navigator.getBattery) {
+
+        if (batteryTop) {
+            batteryTop.textContent = "N/A";
+        }
+
+        if (batteryCard) {
+            batteryCard.textContent = "Unavailable";
+        }
+
+        return;
+
     }
-})();
 
+    try {
 
-/* ---------- BATTERY ---------- */
-
-function setBatteryFallback() {
-    if (batteryEl) batteryEl.textContent = "N/A";
-}
-
-if ("getBattery" in navigator) {
-    navigator.getBattery().then(battery => {
+        const battery = await navigator.getBattery();
 
         function updateBattery() {
-            if (batteryEl) {
-                batteryEl.textContent =
-                    Math.round(battery.level * 100) + "%";
+
+            const percentage = Math.round(
+                battery.level * 100
+            );
+
+            const charging = battery.charging
+                ? " ⚡"
+                : "";
+
+            const value = `${percentage}%${charging}`;
+
+            if (batteryTop) {
+                batteryTop.textContent = value;
             }
+
+            if (batteryCard) {
+                batteryCard.textContent = value;
+            }
+
         }
 
         updateBattery();
-        battery.addEventListener("levelchange", updateBattery);
 
-    }).catch(setBatteryFallback);
-} else {
-    setBatteryFallback();
+        battery.addEventListener(
+            "levelchange",
+            updateBattery
+        );
+
+        battery.addEventListener(
+            "chargingchange",
+            updateBattery
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Battery monitoring unavailable:",
+            error
+        );
+
+    }
+
+}
+
+initializeBattery();
+
+
+/* =========================================
+   6. NETWORK MONITOR
+========================================= */
+
+function updateNetwork() {
+
+    const online = navigator.onLine;
+
+    const network = $("#network");
+    const networkCard = $("#networkCard");
+
+    const status = online
+        ? "ONLINE"
+        : "OFFLINE";
+
+    if (network) {
+        network.textContent = status;
+    }
+
+    if (networkCard) {
+        networkCard.textContent = status;
+    }
+
+}
+
+window.addEventListener(
+    "online",
+    updateNetwork
+);
+
+window.addEventListener(
+    "offline",
+    updateNetwork
+);
+
+updateNetwork();
+
+
+/* =========================================
+   7. THEME ENGINE
+========================================= */
+
+function applyTheme(theme) {
+
+    const allowedThemes = [
+        "gold",
+        "platinum",
+        "sapphire",
+        "amethyst",
+        "emerald"
+    ];
+
+    if (!allowedThemes.includes(theme)) {
+        theme = "gold";
+    }
+
+    document.documentElement.dataset.theme = theme;
+
+    localStorage.setItem(
+        CONFIG.storage.theme,
+        theme
+    );
+
+    $$(".theme-swatch").forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.theme === theme
+        );
+
+    });
+
 }
 
 
-/* ---------- WEATHER (Open-Meteo — no API key) ---------- */
+// Theme button listeners
 
-const WEATHER_CODES = {
-    0:  ["Clear sky", "☀"],
-    1:  ["Mostly clear", "🌤"],
-    2:  ["Partly cloudy", "⛅"],
-    3:  ["Overcast", "☁"],
-    45: ["Fog", "🌫"],
-    48: ["Rime fog", "🌫"],
-    51: ["Light drizzle", "🌦"],
-    53: ["Drizzle", "🌦"],
-    55: ["Heavy drizzle", "🌧"],
-    61: ["Light rain", "🌧"],
-    63: ["Rain", "🌧"],
-    65: ["Heavy rain", "🌧"],
-    71: ["Light snow", "🌨"],
-    73: ["Snow", "🌨"],
-    75: ["Heavy snow", "❄"],
-    80: ["Showers", "🌦"],
-    81: ["Showers", "🌧"],
-    82: ["Violent showers", "⛈"],
-    95: ["Thunderstorm", "⛈"],
-    96: ["Storm + hail", "⛈"],
-    99: ["Storm + hail", "⛈"]
-};
+$$(".theme-swatch").forEach(button => {
 
-let lastWeatherText = "Weather unavailable";
+    button.addEventListener("click", () => {
 
-function renderWeather(code, temp, wind) {
-    const match = WEATHER_CODES[code] || ["Unknown", "🌡"];
+        applyTheme(button.dataset.theme);
 
-    document.getElementById("weatherIcon").textContent = match[1];
-    document.getElementById("weatherTemp").textContent =
-        Math.round(temp) + "°C";
-    document.getElementById("weatherDesc").textContent = match[0];
-    document.getElementById("weatherWind").textContent =
-        "Wind " + Math.round(wind) + " km/h";
+    });
 
-    lastWeatherText = match[0] + ", " + Math.round(temp) + "°C";
+});
+
+
+// Restore saved theme
+
+applyTheme(
+    localStorage.getItem(CONFIG.storage.theme) || "gold"
+);
+
+
+/* =========================================
+   8. NOTES ENGINE
+========================================= */
+
+const notesInput = $("#notesInput");
+const saveNotes = $("#saveNotes");
+const notesStatus = $("#notesStatus");
+
+if (notesInput) {
+
+    notesInput.value =
+        localStorage.getItem(CONFIG.storage.notes) || "";
+
 }
 
-function loadWeather(latitude, longitude) {
-    const url =
-        "https://api.open-meteo.com/v1/forecast" +
-        "?latitude=" + latitude +
-        "&longitude=" + longitude +
-        "&current=temperature_2m,weather_code,wind_speed_10m";
+if (saveNotes) {
 
-    fetch(url)
-        .then(response => {
-            if (!response.ok) throw new Error("Weather fetch failed");
-            return response.json();
-        })
-        .then(data => {
-            const current = data.current;
+    saveNotes.addEventListener("click", () => {
 
-            document.getElementById("weatherLoc").textContent =
-                "● LIVE";
-            document.getElementById("weatherLoc").style.color =
-                "#8fbd65";
+        localStorage.setItem(
+            CONFIG.storage.notes,
+            notesInput.value
+        );
 
-            renderWeather(
-                current.weather_code,
-                current.temperature_2m,
-                current.wind_speed_10m
-            );
-        })
-        .catch(() => {
-            document.getElementById("weatherDesc").textContent =
-                "Weather unavailable";
-            document.getElementById("weatherLoc").textContent =
-                "ERROR";
-        });
+        if (notesStatus) {
+
+            notesStatus.textContent =
+                "✓ Notes saved successfully.";
+
+        }
+
+    });
+
 }
 
-function initWeather() {
-    if (!navigator.geolocation) {
-        document.getElementById("weatherDesc").textContent =
-            "Geolocation not supported";
-        document.getElementById("weatherLoc").textContent = "N/A";
+
+// Automatic note saving
+
+if (notesInput) {
+
+    notesInput.addEventListener("input", () => {
+
+        localStorage.setItem(
+            CONFIG.storage.notes,
+            notesInput.value
+        );
+
+        if (notesStatus) {
+            notesStatus.textContent = "Saving...";
+        }
+
+    });
+
+}
+
+
+/* =========================================
+   9. TASK MANAGER
+========================================= */
+
+let tasks = [];
+
+try {
+
+    tasks = JSON.parse(
+        localStorage.getItem(CONFIG.storage.tasks) || "[]"
+    );
+
+    if (!Array.isArray(tasks)) {
+        tasks = [];
+    }
+
+} catch (error) {
+
+    tasks = [];
+
+}
+
+
+const taskInput = $("#taskInput");
+const addTaskButton = $("#addTask");
+const taskList = $("#taskList");
+
+
+function saveTasks() {
+
+    localStorage.setItem(
+        CONFIG.storage.tasks,
+        JSON.stringify(tasks)
+    );
+
+}
+
+
+function renderTasks() {
+
+    if (!taskList) return;
+
+    taskList.innerHTML = "";
+
+    if (tasks.length === 0) {
+
+        taskList.innerHTML = `
+            <p style="color:var(--muted);font-size:12px;">
+                No tasks yet. Add your first task!
+            </p>
+        `;
+
         return;
+
+    }
+
+    tasks.forEach(task => {
+
+        const item = document.createElement("div");
+
+        item.className = "task-item";
+
+        if (task.completed) {
+            item.classList.add("completed");
+        }
+
+        const checkbox = document.createElement("input");
+
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+
+        checkbox.addEventListener("change", () => {
+
+            task.completed = checkbox.checked;
+
+            saveTasks();
+            renderTasks();
+
+        });
+
+
+        const label = document.createElement("span");
+
+        label.textContent = task.text;
+
+
+        const deleteButton = document.createElement("button");
+
+        deleteButton.className = "delete-task";
+        deleteButton.textContent = "×";
+
+        deleteButton.setAttribute(
+            "aria-label",
+            "Delete task"
+        );
+
+        deleteButton.addEventListener("click", () => {
+
+            tasks = tasks.filter(
+                current => current.id !== task.id
+            );
+
+            saveTasks();
+            renderTasks();
+
+        });
+
+
+        item.append(
+            checkbox,
+            label,
+            deleteButton
+        );
+
+        taskList.appendChild(item);
+
+    });
+
+}
+
+
+function createTask() {
+
+    const text = taskInput.value.trim();
+
+    if (!text) return;
+
+    tasks.push({
+
+        id: Date.now(),
+
+        text,
+
+        completed: false
+
+    });
+
+    taskInput.value = "";
+
+    saveTasks();
+    renderTasks();
+
+}
+
+
+if (addTaskButton) {
+
+    addTaskButton.addEventListener(
+        "click",
+        createTask
+    );
+
+}
+
+
+if (taskInput) {
+
+    taskInput.addEventListener("keydown", event => {
+
+        if (event.key === "Enter") {
+            createTask();
+        }
+
+    });
+
+}
+
+
+renderTasks();
+
+
+/* =========================================
+   10. WEATHER ENGINE
+========================================= */
+
+async function loadWeather(latitude, longitude) {
+
+    const temperature = $("#weatherTemp");
+    const description = $("#weatherDesc");
+    const wind = $("#weatherWind");
+    const location = $("#weatherLoc");
+    const icon = $("#weatherIcon");
+
+    try {
+
+        const url =
+            `https://api.open-meteo.com/v1/forecast` +
+            `?latitude=${latitude}` +
+            `&longitude=${longitude}` +
+            `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m` +
+            `&timezone=auto`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Weather request failed");
+        }
+
+        const data = await response.json();
+
+        const current = data.current;
+
+        const weatherCodes = {
+
+            0: ["Clear sky", "☀"],
+            1: ["Mainly clear", "🌤"],
+            2: ["Partly cloudy", "⛅"],
+            3: ["Overcast", "☁"],
+            45: ["Foggy", "🌫"],
+            48: ["Depositing rime fog", "🌫"],
+            51: ["Light drizzle", "🌦"],
+            53: ["Moderate drizzle", "🌦"],
+            55: ["Dense drizzle", "🌧"],
+            61: ["Light rain", "🌧"],
+            63: ["Moderate rain", "🌧"],
+            65: ["Heavy rain", "🌧"],
+            71: ["Light snow", "🌨"],
+            73: ["Moderate snow", "🌨"],
+            75: ["Heavy snow", "❄"],
+            80: ["Rain showers", "🌦"],
+            81: ["Moderate showers", "🌧"],
+            82: ["Heavy showers", "⛈"],
+            95: ["Thunderstorm", "⛈"]
+        };
+
+        const result = weatherCodes[current.weather_code]
+            || ["Unknown conditions", "🌡"];
+
+        if (temperature) {
+            temperature.textContent =
+                `${Math.round(current.temperature_2m)}°C`;
+        }
+
+        if (description) {
+            description.textContent = result[0];
+        }
+
+        if (icon) {
+            icon.textContent = result[1];
+        }
+
+        if (wind) {
+            wind.textContent =
+                `Wind ${current.wind_speed_10m} km/h`;
+        }
+
+        if (location) {
+            location.textContent = "LOCAL WEATHER";
+        }
+
+    } catch (error) {
+
+        if (description) {
+            description.textContent =
+                "Weather temporarily unavailable.";
+        }
+
+        console.error(error);
+
+    }
+
+}
+
+
+function initializeWeather() {
+
+    if (!navigator.geolocation) {
+
+        $("#weatherDesc").textContent =
+            "Location unavailable.";
+
+        return;
+
     }
 
     navigator.geolocation.getCurrentPosition(
+
         position => {
+
             loadWeather(
                 position.coords.latitude,
                 position.coords.longitude
             );
+
         },
+
         () => {
-            document.getElementById("weatherDesc").textContent =
-                "Location access denied";
-            document.getElementById("weatherLoc").textContent =
-                "OFF";
+
+            $("#weatherDesc").textContent =
+                "Location permission required.";
+
+            $("#weatherLoc").textContent =
+                "LOCATION DISABLED";
+
         },
-        { timeout: 10000 }
-    );
-}
 
-initWeather();
-
-// Refresh weather every 10 minutes
-setInterval(() => {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            loadWeather(
-                position.coords.latitude,
-                position.coords.longitude
-            );
-        });
-    }
-}, 600000);
-
-
-/* ---------- PWA INSTALL ---------- */
-
-let deferredInstallPrompt = null;
-const installBtn = document.getElementById("installBtn");
-
-window.addEventListener("beforeinstallprompt", event => {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-    if (installBtn) installBtn.hidden = false;
-});
-
-if (installBtn) {
-    installBtn.addEventListener("click", async () => {
-        if (!deferredInstallPrompt) return;
-
-        deferredInstallPrompt.prompt();
-        await deferredInstallPrompt.userChoice;
-
-        deferredInstallPrompt = null;
-        installBtn.hidden = true;
-    });
-}
-
-window.addEventListener("appinstalled", () => {
-    if (installBtn) installBtn.hidden = true;
-});
-
-
-/* ---------- COMMAND CENTER ---------- */
-
-const commandInput = document.getElementById("commandInput");
-const commandButton = document.getElementById("commandButton");
-const commandOutput = document.getElementById("commandOutput");
-
-const SHORTCUTS = {
-    "github": "https://github.com/princeuntouchable01",
-    "portfolio": "https://github.com/princeuntouchable01/TECH_PRO_PORTFOLIO-.git",
-    "tp-ai": "https://github.com/princeuntouchable01/TP-AI.git",
-    "tpai": "https://github.com/princeuntouchable01/TP-AI.git",
-    "projects": "https://github.com/princeuntouchable01/Weather_Generator.git",
-    "weather": "https://github.com/princeuntouchable01/Weather_Generator.git"
-};
-
-function printOutput(text) {
-    commandOutput.textContent = text;
-}
-
-function runCommand() {
-    const command = commandInput.value.trim();
-
-    if (!command) {
-        printOutput("Please enter a command.");
-        return;
-    }
-
-    const lower = command.toLowerCase();
-
-    // help
-    if (lower === "help") {
-        printOutput(
-            "Commands: github, portfolio, tp-ai, projects, " +
-            "time, date, weather, google <query>, youtube <query>"
-        );
-        return;
-    }
-
-    // time / date
-    if (lower === "time") {
-        printOutput(
-            "Current time: " +
-            new Date().toLocaleTimeString()
-        );
-        return;
-    }
-
-    if (lower === "date") {
-        printOutput(
-            "Today is " +
-            new Date().toLocaleDateString([], {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            })
-        );
-        return;
-    }
-
-    if (lower === "weather") {
-        printOutput("Current weather: " + lastWeatherText);
-        return;
-    }
-
-    // shortcut links
-    if (SHORTCUTS[lower]) {
-        window.open(SHORTCUTS[lower], "_blank", "noopener");
-        printOutput("Opening " + lower + "...");
-        return;
-    }
-
-    // search commands
-    if (lower.startsWith("google ")) {
-        const query = command.substring(7).trim();
-
-        if (query) {
-            window.open(
-                "https://www.google.com/search?q=" +
-                encodeURIComponent(query),
-                "_blank",
-                "noopener"
-            );
-            printOutput("Searching Google for: " + query);
-            return;
+        {
+            timeout: 10000,
+            maximumAge: 600000
         }
-    }
 
-    if (lower.startsWith("youtube ")) {
-        const query = command.substring(8).trim();
-
-        if (query) {
-            window.open(
-                "https://www.youtube.com/results?search_query=" +
-                encodeURIComponent(query),
-                "_blank",
-                "noopener"
-            );
-            printOutput("Searching YouTube for: " + query);
-            return;
-        }
-    }
-
-/* ---------- THEME MANAGER ---------- */
-
-const themeSwatches = document.querySelectorAll(".theme-swatch");
-const themeNameEl = document.getElementById("themeName");
-
-function applyTheme(name) {
-    document.documentElement.setAttribute("data-theme", name);
-    localStorage.setItem("prince-os-theme", name);
-
-    themeSwatches.forEach(swatch => {
-        swatch.classList.toggle(
-            "active",
-            swatch.dataset.theme === name
-        );
-    });
-
-    if (themeNameEl) {
-        themeNameEl.textContent = name.toUpperCase();
-    }
-}
-
-themeSwatches.forEach(swatch => {
-    swatch.addEventListener("click", () => {
-        applyTheme(swatch.dataset.theme);
-    });
-});
-
-// Restore saved theme (default: gold)
-applyTheme(
-    localStorage.getItem("prince-os-theme") || "gold"
-);
-
-    printOutput(
-        'Unknown command. Type "help" to see all commands.'
     );
+
 }
 
-commandButton.addEventListener("click", runCommand);
+initializeWeather();
 
-commandInput.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-        runCommand();
+
+/* =========================================
+   11. COMMAND CENTRE
+========================================= */
+
+const commandInput = $("#commandInput");
+const commandButton = $("#commandButton");
+const commandOutput = $("#commandOutput");
+
+
+function executeCommand() {
+
+    if (!commandInput || !commandOutput) return;
+
+    const command = commandInput.value
+        .trim()
+        .toLowerCase();
+
+    if (!command) return;
+
+    let output = "Unknown command. Type help for commands.";
+
+    if (command === "help") {
+
+        output =
+            "Commands: help, time, date, github, portfolio, weather, apps, home, tasks, workspace, settings, status.";
+
     }
-});
+
+    else if (command === "time") {
+
+        output = new Date().toLocaleTimeString();
+
+    }
+
+    else if (command === "date") {
+
+        output = new Date().toDateString();
+
+    }
+
+    else if (command === "github") {
+
+        window.open(
+            "https://github.com/princeuntouchable01",
+            "_blank",
+            "noopener"
+        );
+
+        output = "Opening GitHub.";
+
+    }
+
+    else if (command === "portfolio") {
+
+        window.open(
+            "https://prince-port.lovable.app",
+            "_blank",
+            "noopener"
+        );
+
+        output = "Opening portfolio.";
+
+    }
+
+    else if (command === "weather") {
+
+        output = "Weather information is displayed on Home.";
+
+    }
+
+    else if (command === "apps" || command === "open apps") {
+
+        navigateTo("apps");
+
+        output = "Applications opened.";
+
+    }
+
+    else if (command === "home" || command === "open home") {
+
+        navigateTo("home");
+
+        output = "Home opened.";
+
+    }
+
+    else if (command === "tasks" || command === "show tasks") {
+
+        navigateTo("tasks");
+
+        output = "Task manager opened.";
+
+    }
+
+    else if (
+        command === "workspace" ||
+        command === "open workspace"
+    ) {
+
+        navigateTo("workspace");
+
+        output = "Workspace opened.";
+
+    }
+
+    else if (
+        command === "settings" ||
+        command === "open settings"
+    ) {
+
+        navigateTo("settings");
+
+        output = "Settings opened.";
+
+    }
+
+    else if (command === "status" || command === "system status") {
+
+        output = navigator.onLine
+            ? "PRINCE OS is online and operational."
+            : "PRINCE OS is currently offline.";
+
+    }
+
+    else if (command.startsWith("google ")) {
+
+        const query = command.slice(7);
+
+        window.open(
+            `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+            "_blank",
+            "noopener"
+        );
+
+        output = "Searching Google.";
+
+    }
+
+    else if (command.startsWith("youtube ")) {
+
+        const query = command.slice(8);
+
+        window.open(
+            `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`,
+            "_blank",
+            "noopener"
+        );
+
+        output = "Searching YouTube.";
+
+    }
+
+    commandOutput.textContent = output;
+
+    commandInput.value = "";
+
+}
 
 
+if (commandButton) {
+
+    commandButton.addEventListener(
+        "click",
+        executeCommand
+    );
+
+}
+
+
+if (commandInput) {
+
+    commandInput.addEventListener("keydown", event => {
+
+        if (event.key === "Enter") {
+            executeCommand();
+        }
+
+    });
+
+}
+
+
+/* =========================================
+   12. SYSTEM INITIALIZATION
+========================================= */
+
+function initializeSystem() {
+
+    console.log(
+        `%c PRINCE OS v${CONFIG.version} `,
+        "background:#D6AD35;color:#08090d;padding:8px;font-weight:bold;"
+    );
+
+    console.log(
+        "System initialized successfully."
+    );
+
+    const lastView = localStorage.getItem(
+        "princeOS_lastView"
+    );
+
+    if (lastView && $(`#view-${lastView}`)) {
+
+        navigateTo(lastView);
+
+    }
+
+}
+
+initializeSystem();
+
+
+/* =========================================
+   END OF PRINCE OS v4.0 ENGINE
+========================================= */
