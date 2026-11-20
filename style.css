@@ -1702,3 +1702,42 @@ textarea:focus-visible {
         padding: 12px;
     }
 }
+
+/* =========================================
+   PRINCE OS v4.4 — PDF VIEWER
+========================================= */
+
+.pdf-preview-content {
+    width: min(1100px, 100%);
+    height: 90vh;
+}
+
+.pdf-preview-body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: #202020;
+}
+
+.pdf-preview-body iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #fff;
+}
+
+.pdf-preview-content .file-preview-footer {
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .pdf-preview-content {
+        width: 100%;
+        height: 88vh;
+    }
+
+    .pdf-preview-body {
+        min-height: 0;
+    }
+}
