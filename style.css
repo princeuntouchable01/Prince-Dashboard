@@ -1095,3 +1095,44 @@ textarea:focus-visible {
     }
 
 }
+
+
+/* =================================
+   PRINCE OS — LUCIDE ICON SYSTEM
+================================= */
+
+.nav-item i {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.8;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+/* Active navigation icon */
+.nav-item.active i {
+    color: var(--gold, #d6ad35);
+}
+
+/* Hover effect */
+.nav-item:hover i {
+    color: var(--gold, #d6ad35);
+    transform: scale(1.08);
+}
+
+/* Mobile navigation */
+.bottom-navigation .nav-item {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.bottom-navigation .nav-item i {
+    width: 21px;
+    height: 21px;
+}
+
+.bottom-navigation .nav-item small {
+    font-size: 10px;
+}
