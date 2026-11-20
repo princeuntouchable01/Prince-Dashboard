@@ -1578,4 +1578,82 @@ document.addEventListener("keydown", event => {
     }
 });
 
+// =========================================
+// PRINCE OS v4.4 — PDF PREVIEW ENGINE
+// =========================================
+
+let activePdfUrl = null;
+
+function openPdfPreview(item) {
+    const modal = document.getElementById("pdfPreviewModal");
+    const frame = document.getElementById("pdfFrame");
+    const title = document.getElementById("pdfPreviewName");
+    const details = document.getElementById("pdfPreviewDetails");
+
+    if (!modal || !frame || !item.blob) {
+        console.error("PDF preview unavailable.");
+        return;
+    }
+
+    // Clean up any previous PDF preview
+    if (activePdfUrl) {
+        URL.revokeObjectURL(activePdfUrl);
+    }
+
+    // Create a temporary URL for the PDF
+    activePdfUrl = URL.createObjectURL(item.blob);
+
+    // Load PDF into the viewer
+    frame.src = activePdfUrl;
+    title.textContent = item.name;
+    details.textContent = formatFileSize(item.size || 0);
+
+    modal.classList.add("active");
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+function closePdfPreview() {
+    const modal = document.getElementById("pdfPreviewModal");
+    const frame = document.getElementById("pdfFrame");
+
+    if (!modal || !frame) return;
+
+    modal.classList.remove("active");
+
+    // Stop displaying the PDF
+    frame.src = "about:blank";
+
+    // Release temporary storage URL
+    if (activePdfUrl) {
+        URL.revokeObjectURL(activePdfUrl);
+        activePdfUrl = null;
+    }
+}
+
+// Close button
+document.getElementById("closePdfPreview")
+    ?.addEventListener("click", closePdfPreview);
+
+// Close when clicking outside the viewer
+document.getElementById("pdfPreviewModal")
+    ?.addEventListener("click", event => {
+        if (event.target.id === "pdfPreviewModal") {
+            closePdfPreview();
+        }
+    });
+
+// Close with Escape key
+document.addEventListener("keydown", event => {
+    if (
+        event.key === "Escape" &&
+        document.getElementById("pdfPreviewModal")
+            ?.classList.contains("active")
+    ) {
+        closePdfPreview();
+    }
+});
+
 /* END OF PRINCE OS FILE MANAGER */
