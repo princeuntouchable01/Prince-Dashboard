@@ -898,6 +898,11 @@ function initializeSystem() {
 
 initializeSystem();
 
+// INITIALIZE LUCIDE ICONS
+if (window.lucide) {
+    lucide.createIcons();
+}
+
 
 /* =========================================
    END OF PRINCE OS v4.0 ENGINE
