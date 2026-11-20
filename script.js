@@ -331,6 +331,38 @@ function runCommand() {
         }
     }
 
+/* ---------- THEME MANAGER ---------- */
+
+const themeSwatches = document.querySelectorAll(".theme-swatch");
+const themeNameEl = document.getElementById("themeName");
+
+function applyTheme(name) {
+    document.documentElement.setAttribute("data-theme", name);
+    localStorage.setItem("prince-os-theme", name);
+
+    themeSwatches.forEach(swatch => {
+        swatch.classList.toggle(
+            "active",
+            swatch.dataset.theme === name
+        );
+    });
+
+    if (themeNameEl) {
+        themeNameEl.textContent = name.toUpperCase();
+    }
+}
+
+themeSwatches.forEach(swatch => {
+    swatch.addEventListener("click", () => {
+        applyTheme(swatch.dataset.theme);
+    });
+});
+
+// Restore saved theme (default: gold)
+applyTheme(
+    localStorage.getItem("prince-os-theme") || "gold"
+);
+
     printOutput(
         'Unknown command. Type "help" to see all commands.'
     );
@@ -343,3 +375,5 @@ commandInput.addEventListener("keydown", function (event) {
         runCommand();
     }
 });
+
+
