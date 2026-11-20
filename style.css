@@ -137,9 +137,11 @@ a {
 .brand-mark {
     color: var(--accent);
     font-size: 32px;
+text-shadow:0 0 20px rgba(var(--accent-rgb), 0.4);
 
-    text-shadow:
-        0 0 20px rgba(var(--accent-rgb), 0.4);
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
 .sidebar-brand strong {
