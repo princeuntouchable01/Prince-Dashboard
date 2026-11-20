@@ -162,7 +162,7 @@ setInterval(updateClock, 1000);
 
 
 /* =========================================
-   5. BATTERY MONITOR
+   5. ADVANCED BATTERY MONITOR
 ========================================= */
 
 async function initializeBattery() {
@@ -170,18 +170,19 @@ async function initializeBattery() {
     const batteryTop = $("#battery");
     const batteryCard = $("#batteryCard");
 
-    if (!navigator.getBattery) {
-
+    function showBattery(value) {
         if (batteryTop) {
-            batteryTop.textContent = "N/A";
+            batteryTop.textContent = value;
         }
 
         if (batteryCard) {
-            batteryCard.textContent = "Unavailable";
+            batteryCard.textContent = value;
         }
+    }
 
+    if (!navigator.getBattery) {
+        showBattery("Unavailable");
         return;
-
     }
 
     try {
@@ -194,19 +195,11 @@ async function initializeBattery() {
                 battery.level * 100
             );
 
-            const charging = battery.charging
-                ? " ⚡"
-                : "";
+            const charging = battery.charging;
 
-            const value = `${percentage}%${charging}`;
+            let icon = charging ? "⚡" : "🔋";
 
-            if (batteryTop) {
-                batteryTop.textContent = value;
-            }
-
-            if (batteryCard) {
-                batteryCard.textContent = value;
-            }
+            showBattery(`${icon} ${percentage}%`);
 
         }
 
@@ -224,10 +217,9 @@ async function initializeBattery() {
 
     } catch (error) {
 
-        console.warn(
-            "Battery monitoring unavailable:",
-            error
-        );
+        console.warn("Battery API unavailable:", error);
+
+        showBattery("Unavailable");
 
     }
 
