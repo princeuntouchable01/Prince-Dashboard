@@ -1,263 +1,1097 @@
 /* =========================================
-   PRINCE OS — v3 UPGRADES
-   (weather widget + install button)
-   ========================================= */
+   PRINCE OS v4.0
+   DESIGN SYSTEM
+   BLACK × GOLD × WHITE
+========================================= */
 
-.top-actions {
+:root {
+    --accent-rgb: 214, 173, 53;
+
+    --bg: #08090d;
+    --sidebar: #0d0e13;
+    --panel: #12141b;
+    --panel-hover: #191c25;
+
+    --white: #f5f5f7;
+    --muted: #858895;
+
+    --accent: rgb(var(--accent-rgb));
+    --accent-light: color-mix(
+        in srgb,
+        var(--accent) 55%,
+        white
+    );
+
+    --border: rgba(var(--accent-rgb), 0.16);
+
+    --radius: 18px;
+    --transition: 0.25s ease;
+}
+
+/* THEMES */
+
+[data-theme="platinum"] {
+    --accent-rgb: 199, 203, 212;
+}
+
+[data-theme="sapphire"] {
+    --accent-rgb: 77, 124, 255;
+}
+
+[data-theme="amethyst"] {
+    --accent-rgb: 168, 85, 247;
+}
+
+[data-theme="emerald"] {
+    --accent-rgb: 52, 199, 132;
+}
+
+
+/* =========================================
+   GLOBAL RESET
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at 80% 0%,
+            rgba(var(--accent-rgb), 0.08),
+            transparent 35%
+        ),
+        var(--bg);
+
+    color: var(--white);
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    overflow-x: hidden;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* =========================================
+   OS LAYOUT
+========================================= */
+
+.os-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    width: 245px;
+    min-width: 245px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 28px 18px;
+
+    background: var(--sidebar);
+
+    border-right: 1px solid var(--border);
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 8px 10px 35px;
+}
+
+.brand-mark {
+    color: var(--accent);
+    font-size: 32px;
+
+    text-shadow:
+        0 0 20px rgba(var(--accent-rgb), 0.4);
+}
+
+.sidebar-brand strong {
+    display: block;
+    font-size: 15px;
+    letter-spacing: 2px;
+}
+
+.sidebar-brand small {
+    display: block;
+    margin-top: 5px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.sidebar-label {
+    margin: 12px 10px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-item {
     display: flex;
     align-items: center;
     gap: 14px;
+
+    width: 100%;
+    padding: 14px;
+
+    color: var(--muted);
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-align: left;
+
+    transition: var(--transition);
 }
 
-.install-btn {
-    padding: 9px 14px;
-    color: #080808;
-    background: var(--gold-light);
-    border: none;
-    border-radius: 10px;
+.nav-item span {
+    font-size: 19px;
+}
+
+.nav-item:hover {
+    color: var(--white);
+    background: var(--panel-hover);
+}
+
+.nav-item.active {
+    color: var(--accent-light);
+
+    background: rgba(var(--accent-rgb), 0.09);
+
+    border-color: var(--border);
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+
+    padding: 15px 8px;
+
+    color: var(--muted);
+
     font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.system-indicator {
+    display: inline-block;
+
+    width: 7px;
+    height: 7px;
+
+    margin-right: 7px;
+
+    background: #42ce91;
+    border-radius: 50%;
+
+    box-shadow: 0 0 10px #42ce91;
+}
+
+
+/* =========================================
+   MAIN AREA
+========================================= */
+
+.main-area {
+    flex: 1;
+    min-width: 0;
+}
+
+.top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    height: 76px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 38px;
+
+    background: rgba(8, 9, 13, 0.88);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-bottom: 1px solid var(--border);
+}
+
+.top-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.top-brand .brand-mark {
+    font-size: 23px;
+}
+
+.top-brand strong {
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.system-info {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.system-info strong {
+    color: var(--accent-light);
+    font-size: 14px;
+}
+
+
+/* =========================================
+   PAGE CONTAINER
+========================================= */
+
+.page-container {
+    width: 100%;
+    max-width: 1250px;
+
+    margin: auto;
+    padding: 42px 38px 70px;
+}
+
+.view {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.view.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   HEADINGS
+========================================= */
+
+.welcome-section {
+    margin-bottom: 42px;
+}
+
+.eyebrow {
+    margin-bottom: 12px;
+
+    color: var(--accent);
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.welcome-section h1,
+.page-heading h1 {
+    margin-bottom: 12px;
+
+    color: var(--white);
+
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 750;
+    letter-spacing: -1.5px;
+}
+
+.welcome-section > p:not(.eyebrow),
+.page-heading > p:not(.eyebrow) {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+#date {
+    display: block;
+    margin-top: 15px;
+
+    color: var(--accent-light);
+
+    font-size: 11px;
+}
+
+.page-heading {
+    margin-bottom: 35px;
+}
+
+
+/* =========================================
+   SECTION HEADINGS
+========================================= */
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 35px 0 18px;
+}
+
+.section-heading h2 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.live-status {
+    color: #42ce91;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 1px;
-    cursor: pointer;
-    transition: 0.2s ease;
 }
 
-.install-btn:hover {
-    background: white;
-    transform: scale(1.04);
+.text-button {
+    color: var(--accent);
+
+    background: none;
+    border: none;
+
+    font-size: 11px;
+    font-weight: 700;
 }
 
-.weather-panel {
-    margin-top: 40px;
+
+/* =========================================
+   OVERVIEW CARDS
+========================================= */
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
 }
+
+.overview-card {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+
+    padding: 23px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    transition: var(--transition);
+}
+
+.overview-card:hover {
+    transform: translateY(-4px);
+
+    border-color: var(--accent);
+
+    box-shadow:
+        0 10px 30px rgba(var(--accent-rgb), 0.07);
+}
+
+.overview-card > span {
+    color: var(--accent);
+    font-size: 23px;
+}
+
+.overview-card small {
+    color: var(--muted);
+
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.overview-card strong {
+    font-size: 16px;
+}
+
+
+/* =========================================
+   QUICK LAUNCH
+========================================= */
+
+.quick-apps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.quick-apps a {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 19px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition: var(--transition);
+}
+
+.quick-apps a span {
+    color: var(--accent);
+    font-size: 22px;
+}
+
+.quick-apps a:hover {
+    transform: translateY(-3px);
+    background: var(--panel-hover);
+    border-color: var(--accent);
+}
+
+
+/* =========================================
+   WEATHER
+========================================= */
 
 .weather-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    padding: 22px 24px;
+
+    padding: 25px;
+
     background: var(--panel);
-    border: 1px solid rgba(214, 173, 53, 0.18);
-    border-radius: 18px;
-    transition: 0.25s ease;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
 }
 
-.weather-card:hover {
-    border-color: var(--gold);
-    box-shadow: 0 10px 30px rgba(214, 173, 53, 0.08);
-}
-
-.weather-main {
+.weather-card > div:first-child {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 15px;
 }
 
 #weatherIcon {
-    font-size: 38px;
+    font-size: 35px;
 }
 
 #weatherTemp {
-    color: var(--white);
-    font-size: 32px;
-    font-weight: 700;
+    font-size: 30px;
 }
 
-.weather-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-}
-
-#weatherDesc {
-    color: var(--white);
+.weather-card p {
+    margin-bottom: 7px;
     font-size: 13px;
     font-weight: 700;
 }
 
-#weatherWind {
+.weather-card small {
     color: var(--muted);
     font-size: 10px;
 }
 
-@media (max-width: 700px) {
-    .weather-card {
-        padding: 18px;
-    }
-
-    #weatherIcon {
-        font-size: 30px;
-    }
-
-    #weatherTemp {
-        font-size: 26px;
-    }
-
-    .top-actions {
-        gap: 10px;
-    }
-
-    .install-btn {
-        padding: 8px 10px;
-        font-size: 8px;
-    }
+#weatherLoc {
+    color: var(--accent);
+    font-size: 9px;
+    font-weight: 800;
 }
 
-@media (max-width: 380px) {
-    .system-info {
-        display: block;
-    }
-
-    .weather-meta {
-        align-items: flex-start;
-    }
-
-    .weather-card {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
 
 /* =========================================
-   PRINCE OS — THEME ENGINE
-   ========================================= */
+   COMMAND CENTRE
+========================================= */
 
-/* Accent per theme (RGB triplet drives everything) */
-:root {
-    --accent-rgb: 214, 173, 53;
+.command-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 8px 10px 8px 17px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
 }
 
-[data-theme="platinum"] { --accent-rgb: 199, 203, 212; }
-[data-theme="sapphire"] { --accent-rgb: 77, 124, 255; }
-[data-theme="amethyst"] { --accent-rgb: 168, 85, 247; }
-[data-theme="emerald"]  { --accent-rgb: 52, 199, 132; }
-
-[data-theme] {
-    --gold: rgb(var(--accent-rgb));
-    --gold-light: color-mix(in srgb, rgb(var(--accent-rgb)) 55%, white);
-    --border: rgba(var(--accent-rgb), 0.35);
+.command-box > span {
+    color: var(--accent);
+    font-size: 20px;
 }
 
-/* Re-apply accent to rules that hardcoded the old gold */
-body {
-    background:
-        radial-gradient(circle at 50% 10%, rgba(var(--accent-rgb), 0.12), transparent 35%),
-        radial-gradient(circle at 10% 90%, rgba(var(--accent-rgb), 0.06), transparent 30%),
-        var(--black);
+.command-box input {
+    flex: 1;
+    min-width: 0;
+
+    padding: 10px 0;
+
+    color: var(--white);
+    background: transparent;
+
+    border: none;
+    outline: none;
+
+    font-size: 12px;
 }
 
-.dashboard {
-    box-shadow:
-        0 0 60px rgba(var(--accent-rgb), 0.07),
-        inset 0 0 40px rgba(255, 255, 255, 0.015);
+.command-box input::placeholder {
+    color: var(--muted);
 }
 
-.top-bar {
-    border-bottom: 1px solid rgba(var(--accent-rgb), 0.16);
+.command-box button,
+#saveNotes,
+#addTask {
+    padding: 11px 17px;
+
+    color: #08090d;
+    background: var(--accent);
+
+    border: none;
+    border-radius: 9px;
+
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+
+    transition: var(--transition);
 }
 
-.brand-mark {
-    text-shadow: 0 0 15px rgba(var(--accent-rgb), 0.5);
+.command-box button:hover,
+#saveNotes:hover,
+#addTask:hover {
+    background: var(--accent-light);
 }
 
-.status-card,
-.weather-card {
-    border: 1px solid rgba(var(--accent-rgb), 0.18);
+#commandOutput {
+    min-height: 20px;
+    margin-top: 14px;
+
+    color: var(--muted);
+    font-size: 11px;
 }
 
-.status-card:hover,
-.weather-card:hover {
-    border-color: var(--gold);
-    box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.08);
+
+/* =========================================
+   APPLICATION GRID
+========================================= */
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 17px;
 }
 
 .app-card {
-    background:
-        linear-gradient(145deg, rgba(var(--accent-rgb), 0.07), rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(var(--accent-rgb), 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    min-height: 155px;
+    padding: 23px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    transition: var(--transition);
 }
 
-.app-card:hover,
-.app-card:active {
-    border-color: var(--gold);
+.app-card > span {
+    color: var(--accent);
+    font-size: 27px;
+}
+
+.app-card strong {
+    font-size: 14px;
+}
+
+.app-card small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.app-card:hover {
+    transform: translateY(-4px);
+
+    background: var(--panel-hover);
+
+    border-color: var(--accent);
+
     box-shadow:
-        0 12px 35px rgba(var(--accent-rgb), 0.12),
-        inset 0 0 25px rgba(var(--accent-rgb), 0.04);
+        0 12px 30px rgba(var(--accent-rgb), 0.08);
 }
 
-.app-icon {
-    color: var(--gold-light);
-    background: rgba(var(--accent-rgb), 0.08);
-    border: 1px solid rgba(var(--accent-rgb), 0.3);
+
+/* =========================================
+   WORKSPACE
+========================================= */
+
+.workspace-card,
+.task-card,
+.settings-card {
+    margin-bottom: 20px;
+    padding: 25px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
 }
 
-.command-box {
-    border: 1px solid rgba(var(--accent-rgb), 0.28);
+.workspace-card h2,
+.settings-card h2 {
+    margin-bottom: 12px;
+    font-size: 15px;
 }
 
-.footer {
-    border-top: 1px solid rgba(var(--accent-rgb), 0.12);
+.workspace-card p,
+.settings-card p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
 }
 
-/* Settings panel */
-.settings-panel {
-    margin-top: 40px;
+#notesInput {
+    display: block;
+
+    width: 100%;
+    min-height: 160px;
+
+    margin: 18px 0;
+
+    padding: 16px;
+
+    color: var(--white);
+    background: var(--bg);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    outline: none;
+    resize: vertical;
+
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+#notesInput:focus,
+.task-input input:focus {
+    border-color: var(--accent);
+}
+
+#notesStatus {
+    margin-top: 12px;
+    color: var(--accent);
+}
+
+
+/* =========================================
+   TASK MANAGER
+========================================= */
+
+.task-input {
+    display: flex;
+    gap: 10px;
+}
+
+.task-input input {
+    flex: 1;
+    min-width: 0;
+
+    padding: 13px;
+
+    color: var(--white);
+    background: var(--bg);
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    outline: none;
+    font-size: 12px;
+}
+
+#taskList {
+    margin-top: 20px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px 4px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.task-item span {
+    flex: 1;
+    font-size: 12px;
+}
+
+.task-item.completed span {
+    color: var(--muted);
+    text-decoration: line-through;
+}
+
+.task-item input {
+    accent-color: var(--accent);
+}
+
+.delete-task {
+    color: #e06c5b;
+    background: transparent;
+    border: none;
+    font-size: 17px;
+}
+
+
+/* =========================================
+   SETTINGS / THEMES
+========================================= */
+
+.settings-card {
+    padding: 25px;
 }
 
 .theme-row {
     display: flex;
-    gap: 12px;
     flex-wrap: wrap;
+    gap: 12px;
+
+    margin-top: 22px;
 }
 
 .theme-swatch {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    min-width: 76px;
-    padding: 16px 14px;
+    min-width: 100px;
+    padding: 13px;
+
     color: var(--muted);
-    background: var(--panel);
-    border: 1px solid rgba(var(--accent-rgb), 0.18);
-    border-radius: 16px;
-    font-family: inherit;
+    background: var(--bg);
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
     font-size: 9px;
     font-weight: 800;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: 0.25s ease;
+    letter-spacing: 1px;
+
+    transition: var(--transition);
 }
 
 .theme-swatch:hover {
-    transform: translateY(-3px);
-    border-color: var(--gold);
+    border-color: var(--accent);
 }
 
 .theme-swatch.active {
-    color: var(--white);
-    border-color: var(--gold);
-    box-shadow: 0 8px 25px rgba(var(--accent-rgb), 0.12);
+    color: var(--accent-light);
+    border-color: var(--accent);
+
+    background: rgba(var(--accent-rgb), 0.08);
 }
 
-.theme-dot {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.15);
+
+/* =========================================
+   MOBILE NAVIGATION
+========================================= */
+
+.bottom-navigation {
+    display: none;
 }
 
-.dot-gold     { background: #d6ad35; }
-.dot-platinum { background: #c7cbd4; }
-.dot-sapphire { background: #4d7cff; }
-.dot-amethyst { background: #a855f7; }
-.dot-emerald  { background: #34c784; }
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .sidebar {
+        width: 205px;
+        min-width: 205px;
+    }
+
+    .page-container {
+        padding: 32px 25px 55px;
+    }
+
+    .app-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-apps {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .os-shell {
+        display: block;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .top-bar {
+        height: 65px;
+        padding: 0 18px;
+    }
+
+    .top-brand strong {
+        font-size: 11px;
+    }
+
+    .system-info {
+        gap: 12px;
+        font-size: 9px;
+    }
+
+    .system-info strong {
+        font-size: 12px;
+    }
+
+    .page-container {
+        padding: 30px 18px 115px;
+    }
+
+    .welcome-section {
+        margin-bottom: 32px;
+    }
+
+    .welcome-section h1,
+    .page-heading h1 {
+        font-size: 29px;
+    }
+
+    .overview-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .overview-card {
+        padding: 18px;
+    }
+
+    .quick-apps {
+        grid-template-columns: 1fr;
+    }
+
+    .app-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .app-card {
+        min-height: 135px;
+        padding: 17px;
+    }
+
+    .app-card strong {
+        font-size: 12px;
+    }
+
+    .app-card small {
+        font-size: 9px;
+    }
+
+    .weather-card {
+        padding: 18px;
+    }
+
+    .section-heading h2 {
+        font-size: 14px;
+    }
+
+    .workspace-card,
+    .task-card,
+    .settings-card {
+        padding: 19px;
+    }
+
+    .bottom-navigation {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        padding: 10px 5px calc(10px + env(safe-area-inset-bottom));
+
+        background: rgba(13, 14, 19, 0.96);
+
+        border-top: 1px solid var(--border);
+
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .bottom-navigation .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        gap: 5px;
+
+        width: auto;
+        padding: 8px 10px;
+
+        border: none;
+        background: transparent;
+
+        font-size: 9px;
+    }
+
+    .bottom-navigation .nav-item span {
+        font-size: 20px;
+    }
+
+    .bottom-navigation .nav-item small {
+        font-size: 9px;
+    }
+
+    .bottom-navigation .nav-item.active {
+        color: var(--accent);
+        background: transparent;
+    }
+
+}
+
+
+/* =========================================
+   SMALL PHONES
+========================================= */
 
 @media (max-width: 380px) {
-    .theme-swatch {
-        min-width: 62px;
-        padding: 12px 10px;
+
+    .system-info {
+        gap: 8px;
     }
+
+    .system-info span:first-child {
+        display: none;
+    }
+
+    .page-container {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .app-grid {
+        gap: 9px;
+    }
+
+    .app-card {
+        padding: 13px;
+    }
+
+    .theme-swatch {
+        min-width: 80px;
+    }
+
+    .bottom-navigation .nav-item {
+        padding: 7px;
+    }
+
+}
+
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+
 }
