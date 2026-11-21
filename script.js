@@ -184,9 +184,8 @@ function updateGreeting() {
     }
 }
 
-function applyGreetingLanguage(language) {
 
-    const greeting = $("#greeting");
+function applyGreetingLanguage(language) {
 
     const selectedLanguage =
         language === "fr" ? "fr" : "en";
@@ -196,49 +195,15 @@ function applyGreetingLanguage(language) {
         selectedLanguage
     );
 
-    const languageButtons = $$(".language-swatch");
-
-    languageButtons.forEach(button => {
+    $$(".language-swatch").forEach(button => {
         button.classList.toggle(
             "active",
             button.dataset.language === selectedLanguage
         );
     });
 
-    if (!greeting) return;
-
-    const hour = new Date().getHours();
-
-    const greetings = {
-        en: {
-            welcome: "WELCOME BACK",
-            morning: "GOOD MORNING",
-            afternoon: "GOOD AFTERNOON",
-            evening: "GOOD EVENING"
-        },
-        fr: {
-            welcome: "BON RETOUR",
-            morning: "BONJOUR",
-            afternoon: "BON APRÈS-MIDI",
-            evening: "BONSOIR"
-        }
-    };
-
-    const messages = greetings[selectedLanguage];
-
-    let message = messages.welcome;
-
-    if (hour < 12) {
-        message = messages.morning;
-    } else if (hour < 17) {
-        message = messages.afternoon;
-    } else {
-        message = messages.evening;
-    }
-
-    greeting.textContent = message;
+    updateGreeting();
 }
-
 $$(".language-swatch").forEach(button => {
     button.addEventListener("click", () => {
         applyGreetingLanguage(button.dataset.language);
