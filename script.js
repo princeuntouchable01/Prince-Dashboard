@@ -136,29 +136,118 @@ function updateClock() {
 
     }
 
-    if (greeting) {
-
-        const hour = now.getHours();
-
-        let message = "WELCOME BACK";
-
-        if (hour < 12) {
-            message = "GOOD MORNING";
-        } else if (hour < 17) {
-            message = "GOOD AFTERNOON";
-        } else {
-            message = "GOOD EVENING";
-        }
-
-        greeting.textContent = message;
-
-    }
-
+    updateGreeting();
 }
 
 updateClock();
 
 setInterval(updateClock, 1000);
+
+
+/* =========================================
+   4.1 GREETING LANGUAGE ENGINE
+========================================= */
+function updateGreeting() {
+
+    const greeting = $("#greeting");
+
+    if (!greeting) return;
+
+    const language =
+        localStorage.getItem("princeOSLanguage") || "en";
+
+    const hour = new Date().getHours();
+
+    const greetings = {
+        en: {
+            welcome: "WELCOME BACK",
+            morning: "GOOD MORNING",
+            afternoon: "GOOD AFTERNOON",
+            evening: "GOOD EVENING"
+        },
+        fr: {
+            welcome: "BON RETOUR",
+            morning: "BONJOUR",
+            afternoon: "BON APRÈS-MIDI",
+            evening: "BONSOIR"
+        }
+    };
+
+    const messages = greetings[language] || greetings.en;
+
+    if (hour < 12) {
+        greeting.textContent = messages.morning;
+    } else if (hour < 17) {
+        greeting.textContent = messages.afternoon;
+    } else {
+        greeting.textContent = messages.evening;
+    }
+}
+
+function applyGreetingLanguage(language) {
+
+    const greeting = $("#greeting");
+
+    const selectedLanguage =
+        language === "fr" ? "fr" : "en";
+
+    localStorage.setItem(
+        "princeOSLanguage",
+        selectedLanguage
+    );
+
+    const languageButtons = $$(".language-swatch");
+
+    languageButtons.forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.language === selectedLanguage
+        );
+    });
+
+    if (!greeting) return;
+
+    const hour = new Date().getHours();
+
+    const greetings = {
+        en: {
+            welcome: "WELCOME BACK",
+            morning: "GOOD MORNING",
+            afternoon: "GOOD AFTERNOON",
+            evening: "GOOD EVENING"
+        },
+        fr: {
+            welcome: "BON RETOUR",
+            morning: "BONJOUR",
+            afternoon: "BON APRÈS-MIDI",
+            evening: "BONSOIR"
+        }
+    };
+
+    const messages = greetings[selectedLanguage];
+
+    let message = messages.welcome;
+
+    if (hour < 12) {
+        message = messages.morning;
+    } else if (hour < 17) {
+        message = messages.afternoon;
+    } else {
+        message = messages.evening;
+    }
+
+    greeting.textContent = message;
+}
+
+$$(".language-swatch").forEach(button => {
+    button.addEventListener("click", () => {
+        applyGreetingLanguage(button.dataset.language);
+    });
+});
+
+applyGreetingLanguage(
+    localStorage.getItem("princeOSLanguage") || "en"
+);
 
 
 /* =========================================
